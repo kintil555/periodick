@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembelajaran Gelombang Interaktif</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* =============================================
+   DEEP OCEAN / DARK TEAL THEME
+   ============================================= */
+:root {
+  --bg:       #060d14;
+  --bg2:      #091520;
+  --bg3:      #0d1e2d;
+  --surface:  #0f2336;
+  --surface2: #132840;
+  --border:   #1a3a52;
+  --border2:  #234d6a;
+  --accent:   #00e5c3;
+  --accent2:  #f0a500;
+  --accent3:  #ff5c7a;
+  --accent4:  #7eb8ff;
+  --text:     #d4eaf7;
+  --text2:    #7aadcc;
+  --text3:    #3d6a85;
+  --glow-c:   rgba(0,229,195,0.35);
+  --glow-o:   rgba(240,165,0,0.35);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ocean floor texture bg */
+body::before {
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 80%, rgba(0,229,195,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(126,184,255,0.04) 0%, transparent 60%),
+    repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(0,229,195,0.012) 60px, rgba(0,229,195,0.012) 61px);
+  pointer-events:none;z-index:0;
+}
+
+/* ---- NAV ---- */
+.nav-tabs {
+  display:flex;
+  background:rgba(6,13,20,0.96);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:500;
+  overflow-x:auto;
+  backdrop-filter:blur(14px);
+}
+.nav-tab {
+  display:flex;align-items:center;gap:8px;
+  padding:14px 26px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.68rem;font-weight:600;
+  letter-spacing:2px;color:var(--text3);
+  cursor:pointer;border-bottom:2px solid transparent;
+  margin-bottom:-1px;white-space:nowrap;
+  transition:all .2s;text-decoration:none;
+}
+.nav-tab:hover{color:var(--accent);background:rgba(0,229,195,0.04);}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);text-shadow:0 0 12px var(--glow-c);}
+
+/* ---- HERO ---- */
+.hero {
+  position:relative;overflow:hidden;
+  padding:60px 24px 48px;
+  text-align:center;
+  background:linear-gradient(160deg,#020a10 0%,#0a1e30 50%,#051520 100%);
+}
+.hero-canvas {
+  position:absolute;inset:0;
+  pointer-events:none;
+}
+.hero-content{position:relative;z-index:2;}
+.hero-tag {
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.65rem;letter-spacing:4px;
+  color:var(--accent);
+  background:rgba(0,229,195,0.08);
+  border:1px solid rgba(0,229,195,0.2);
+  border-radius:20px;padding:5px 16px;
+  margin-bottom:16px;
+}
+.hero-title {
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2rem,6vw,3.8rem);
+  font-weight:800;
+  background:linear-gradient(135deg,#00e5c3,#7eb8ff,#f0a500);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  line-height:1.1;
+}
+.hero-sub {
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.7rem;letter-spacing:3px;
+  color:var(--text3);margin-top:12px;
+}
+
+/* ---- SECTION NAV PILLS ---- */
+.section-pills {
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:20px 24px;
+  max-width:1100px;margin:0 auto;
+  position:relative;z-index:10;
+}
+.pill {
+  padding:6px 16px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.65rem;letter-spacing:1px;
+  color:var(--text2);
+  cursor:pointer;
+  transition:all .2s;
+  text-decoration:none;
+}
+.pill:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ---- PAGE WRAP ---- */
+.page{max-width:1100px;margin:0 auto;padding:16px 24px 60px;position:relative;z-index:10;}
+
+/* ---- SECTION ---- */
+.section{margin-bottom:64px;}
+.sec-head {
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:28px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+}
+.sec-num {
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.55rem;letter-spacing:3px;
+  color:var(--text3);
+  min-width:60px;
+}
+.sec-icon {
+  width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;flex-shrink:0;
+}
+.sec-title {
+  font-family:'Syne',sans-serif;
+  font-size:1.7rem;font-weight:700;
+  color:var(--text);
+}
+
+/* ---- FORMULA BOX ---- */
+.formula-strip {
+  background:linear-gradient(135deg,var(--surface),var(--surface2));
+  border:1px solid var(--border);
+  border-left:4px solid var(--accent);
+  border-radius:10px;
+  padding:18px 22px;
+  margin:18px 0;
+  display:flex;align-items:center;gap:20px;
+  flex-wrap:wrap;
+}
+.formula-strip .f-label {
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.6rem;letter-spacing:3px;color:var(--accent);
+  text-transform:uppercase;
+}
+.formula-strip .f-eq {
+  font-family:'JetBrains Mono',monospace;
+  font-size:1.3rem;font-weight:600;color:var(--text);
+}
+.formula-strip .f-vars {
+  font-size:0.78rem;color:var(--text2);line-height:1.7;
+}
+
+.fbox-row{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0;}
+.fbox {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px 18px;
+  flex:1;min-width:150px;text-align:center;
+}
+.fbox .fb-label{font-family:'JetBrains Mono',monospace;font-size:0.58rem;letter-spacing:2px;color:var(--text3);margin-bottom:6px;}
+.fbox .fb-eq{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:600;color:var(--accent2);}
+.fbox .fb-note{font-size:0.7rem;color:var(--text3);margin-top:4px;line-height:1.4;}
+
+/* ---- PROSE ---- */
+.prose{font-size:0.95rem;line-height:1.85;color:var(--text2);}
+.prose strong{color:var(--text);font-weight:600;}
+.prose em{color:var(--accent);font-style:normal;font-weight:600;}
+
+/* ---- INFO HIGHLIGHT ---- */
+.highlight-box {
+  background:rgba(0,229,195,0.06);
+  border:1px solid rgba(0,229,195,0.18);
+  border-radius:10px;
+  padding:16px 20px;
+  margin:16px 0;
+  font-size:0.9rem;line-height:1.75;
+  color:var(--text2);
+}
+.highlight-box.orange{background:rgba(240,165,0,0.06);border-color:rgba(240,165,0,0.2);}
+.highlight-box.red{background:rgba(255,92,122,0.06);border-color:rgba(255,92,122,0.2);}
+.highlight-box.blue{background:rgba(126,184,255,0.06);border-color:rgba(126,184,255,0.2);}
+
+/* ---- TWO COL ---- */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+@media(max-width:680px){.two-col{grid-template-columns:1fr;}}
+
+.info-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;padding:20px;
+}
+.info-card h4{
+  font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.info-card p{font-size:0.85rem;color:var(--text2);line-height:1.7;}
+
+/* ---- INTERACTIVE WRAP ---- */
+.sim-wrap {
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;
+  margin:20px 0;
+  box-shadow:0 8px 40px rgba(0,0,0,0.3);
+}
+.sim-toolbar {
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:12px 16px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+}
+.tb-label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:1px;color:var(--text3);}
+.tb-btn {
+  padding:5px 14px;background:var(--bg3);
+  border:1px solid var(--border);border-radius:6px;
+  font-family:'Space Grotesk',sans-serif;font-weight:600;
+  font-size:0.78rem;color:var(--text2);
+  cursor:pointer;transition:all .15s;
+}
+.tb-btn:hover{background:var(--accent);color:#000;border-color:var(--accent);}
+.tb-btn.active{background:var(--accent);color:#000;border-color:var(--accent);}
+.tb-sep{width:1px;height:22px;background:var(--border);}
+
+canvas.sim-c{display:block;width:100%;cursor:default;}
+
+.sim-status {
+  display:flex;flex-wrap:wrap;gap:20px;
+  padding:10px 16px;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+}
+.stat-item{display:flex;align-items:center;gap:8px;}
+.stat-label{font-family:'JetBrains Mono',monospace;font-size:0.62rem;letter-spacing:1px;color:var(--text3);}
+.stat-val{font-family:'JetBrains Mono',monospace;font-size:0.9rem;font-weight:600;color:var(--accent2);}
+
+.sim-legend{display:flex;flex-wrap:wrap;gap:14px;padding:10px 16px;background:var(--bg2);border-top:1px solid var(--border);}
+.leg-i{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--text3);}
+.leg-line{width:22px;height:3px;border-radius:2px;}
+
+.sim-hint{text-align:center;padding:8px;font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--text3);background:var(--bg2);border-top:1px solid var(--border);}
+
+/* ---- SLIDER ---- */
+input[type=range]{
+  -webkit-appearance:none;height:4px;
+  border-radius:2px;background:var(--border2);
+  outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;
+  border-radius:50%;background:var(--accent);cursor:pointer;
+  box-shadow:0 0 8px var(--glow-c);
+}
+.slider-group{display:flex;flex-wrap:wrap;gap:16px;padding:10px 16px;background:var(--bg3);border-top:1px solid var(--border);}
+.sl-row{display:flex;align-items:center;gap:10px;}
+.sl-row label{font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--text3);white-space:nowrap;}
+.sl-row span{font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--accent2);min-width:36px;text-align:right;}
+
+/* ---- TABLE ---- */
+.data-table{width:100%;border-collapse:collapse;font-size:0.86rem;margin:16px 0;}
+.data-table th{background:var(--surface);padding:10px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:0.62rem;letter-spacing:1px;color:var(--text3);border-bottom:2px solid var(--border);}
+.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);}
+.data-table tr:hover td{background:var(--surface);}
+
+/* ---- SONAR ---- */
+.sonar-controls{
+  display:flex;flex-wrap:wrap;gap:12px;align-items:center;
+  padding:14px 16px;background:var(--surface);border-bottom:1px solid var(--border);
+}
+.sonar-big-btn {
+  padding:8px 22px;
+  background:linear-gradient(135deg,#00e5c3,#0097a7);
+  border:none;border-radius:8px;
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:0.85rem;color:#000;
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 0 20px rgba(0,229,195,0.3);
+}
+.sonar-big-btn:hover{box-shadow:0 0 30px rgba(0,229,195,0.5);transform:scale(1.03);}
+.sonar-big-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+.sonar-display{
+  display:grid;grid-template-columns:1fr 240px;gap:0;
+}
+@media(max-width:680px){.sonar-display{grid-template-columns:1fr;}}
+
+.sonar-readout{
+  background:var(--bg);
+  border-left:1px solid var(--border);
+  padding:16px;
+  display:flex;flex-direction:column;gap:12px;
+}
+@media(max-width:680px){.sonar-readout{border-left:none;border-top:1px solid var(--border);}}
+
+.readout-val{
+  background:rgba(0,0,0,0.4);
+  border:1px solid var(--border);
+  border-radius:8px;padding:12px;
+  text-align:center;
+}
+.rv-label{font-family:'JetBrains Mono',monospace;font-size:0.58rem;letter-spacing:2px;color:var(--text3);margin-bottom:4px;}
+.rv-num{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:600;color:var(--accent);}
+.rv-unit{font-size:0.65rem;color:var(--text3);}
+
+.depth-bar-wrap{margin-top:8px;}
+.depth-label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text3);margin-bottom:4px;}
+.depth-bar{height:8px;background:linear-gradient(90deg,var(--accent),var(--accent4));border-radius:4px;transition:width .5s ease;}
+
+/* ---- CARDS GRID ---- */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:16px 0;}
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:18px;
+  transition:transform .2s,box-shadow .2s;
+}
+.card:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,229,195,0.1);}
+.card-icon{font-size:1.8rem;margin-bottom:10px;}
+.card-title{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;margin-bottom:6px;}
+.card-desc{font-size:0.8rem;color:var(--text2);line-height:1.6;}
+
+/* ---- FOOTER ---- */
+footer{
+  text-align:center;padding:24px;
+  color:var(--text3);font-family:'JetBrains Mono',monospace;
+  font-size:0.62rem;letter-spacing:2px;
+  border-top:1px solid var(--border);
+}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+
+select.tb-sel{
+  padding:4px 10px;background:var(--bg3);border:1px solid var(--border);
+  border-radius:6px;font-family:'Space Grotesk',sans-serif;
+  font-size:0.78rem;color:var(--text2);cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav-tabs">
+  <a href="index.html" class="nav-tab">⚛ TABEL PERIODIK</a>
+  <a href="cahaya.html" class="nav-tab">☀ CAHAYA</a>
+  <a href="gelombang.html" class="nav-tab active">〰 GELOMBANG</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <canvas class="hero-canvas" id="heroWave"></canvas>
+  <div class="hero-content">
+    <div class="hero-tag">FISIKA • GELOMBANG & BUNYI</div>
+    <div class="hero-title">Gelombang</div>
+    <div class="hero-sub">TRANSVERSAL • LONGITUDINAL • BUNYI • RESONANSI • SONAR</div>
+  </div>
+</div>
+
+<!-- SECTION PILLS -->
+<div class="section-pills">
+  <a href="#sec-jenis" class="pill">〰 Jenis Gelombang</a>
+  <a href="#sec-bandul" class="pill">🔵 Bandul</a>
+  <a href="#sec-pegas" class="pill">🌀 Pegas & Slinki</a>
+  <a href="#sec-bunyi" class="pill">🔊 Bunyi</a>
+  <a href="#sec-resonansi" class="pill">🎵 Resonansi</a>
+  <a href="#sec-sonar" class="pill">🚢 Sonar Interaktif</a>
+</div>
+
+<div class="page">
+
+<!-- ============================
+     1. JENIS GELOMBANG
+     ============================ -->
+<section class="section" id="sec-jenis">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <div class="sec-icon" style="background:rgba(0,229,195,0.1);">〰</div>
+    <div>
+      <div class="sec-title">Jenis Gelombang</div>
+    </div>
+  </div>
+
+  <p class="prose">
+    <strong>Gelombang</strong> adalah getaran yang merambat membawa energi tanpa memindahkan materi secara permanen. Berdasarkan arah rambat dan arah getar, gelombang dibagi menjadi dua jenis utama.
+  </p>
+
+  <div class="formula-strip" style="margin-top:20px;">
+    <div>
+      <div class="f-label">PERSAMAAN UMUM GELOMBANG</div>
+      <div class="f-eq">v = λ · f = λ / T</div>
+    </div>
+    <div class="f-vars">
+      v = cepat rambat gelombang (m/s)<br>
+      λ = panjang gelombang (m)<br>
+      f = frekuensi (Hz) &nbsp;|&nbsp; T = periode (s)
+    </div>
+  </div>
+
+  <div class="fbox-row">
+    <div class="fbox">
+      <div class="fb-label">FREKUENSI</div>
+      <div class="fb-eq">f = 1/T</div>
+      <div class="fb-note">jumlah getaran per detik</div>
+    </div>
+    <div class="fbox">
+      <div class="fb-label">PERIODE</div>
+      <div class="fb-eq">T = 1/f</div>
+      <div class="fb-note">waktu satu getaran penuh</div>
+    </div>
+    <div class="fbox">
+      <div class="fb-label">PANJANG GELOMBANG</div>
+      <div class="fb-eq">λ = v/f</div>
+      <div class="fb-note">jarak satu siklus penuh</div>
+    </div>
+    <div class="fbox">
+      <div class="fb-label">AMPLITUDO</div>
+      <div class="fb-eq">A = simpangan maks.</div>
+      <div class="fb-note">tidak mempengaruhi v</div>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-top:24px;">
+    <div class="info-card" style="border-left:3px solid var(--accent);">
+      <h4 style="color:var(--accent)">〰 Gelombang Transversal</h4>
+      <p>Arah getaran <strong>tegak lurus</strong> terhadap arah rambatan. Contoh: gelombang pada tali, gelombang air, gelombang cahaya, gelombang elektromagnetik.</p>
+      <div class="highlight-box" style="margin-top:12px;padding:10px 14px;">
+        Bagian-bagian: <strong>Puncak (crest)</strong> dan <strong>Lembah (trough)</strong><br>
+        Satu λ = jarak puncak ke puncak berikutnya
+      </div>
+    </div>
+    <div class="info-card" style="border-left:3px solid var(--accent2);">
+      <h4 style="color:var(--accent2)">≋ Gelombang Longitudinal</h4>
+      <p>Arah getaran <strong>sejajar</strong> dengan arah rambatan. Contoh: gelombang bunyi, gelombang pada pegas/slinki yang didorong-tarik.</p>
+      <div class="highlight-box" style="margin-top:12px;padding:10px 14px;background:rgba(240,165,0,0.06);border-color:rgba(240,165,0,0.2);">
+        Bagian-bagian: <strong>Rapatan (compression)</strong> dan <strong>Regangan (rarefaction)</strong><br>
+        Satu λ = jarak rapatan ke rapatan berikutnya
+      </div>
+    </div>
+  </div>
+
+  <!-- WAVE SIMULATOR -->
+  <div class="sim-wrap">
+    <div class="sim-toolbar">
+      <span class="tb-label">JENIS:</span>
+      <button class="tb-btn active" id="btnTrans" onclick="setWaveType('transversal')">〰 Transversal</button>
+      <button class="tb-btn" id="btnLong" onclick="setWaveType('longitudinal')">≋ Longitudinal</button>
+      <div class="tb-sep"></div>
+      <span class="tb-label">TAMPILKAN PARTIKEL:</span>
+      <button class="tb-btn active" id="btnParticle" onclick="toggleParticles()">ON</button>
+      <div class="tb-sep"></div>
+      <button class="tb-btn" onclick="togglePause()" id="btnPause">⏸ Jeda</button>
+    </div>
+    <canvas id="waveCanvas" class="sim-c" height="200"></canvas>
+    <div class="slider-group">
+      <div class="sl-row">
+        <label>AMPLITUDO</label>
+        <input type="range" id="ampSlider" min="10" max="60" value="35" oninput="setAmp(this.value)" style="width:90px">
+        <span id="ampVal">35</span>
+      </div>
+      <div class="sl-row">
+        <label>FREKUENSI</label>
+        <input type="range" id="freqSlider" min="1" max="8" value="3" step="0.5" oninput="setFreq(this.value)" style="width:90px">
+        <span id="freqVal">3.0 Hz</span>
+      </div>
+      <div class="sl-row">
+        <label>KECEPATAN</label>
+        <input type="range" id="speedSlider" min="50" max="300" value="150" oninput="setSpeed(this.value)" style="width:90px">
+        <span id="speedVal">150 m/s</span>
+      </div>
+    </div>
+    <div class="sim-status">
+      <div class="stat-item"><span class="stat-label">λ =</span><span class="stat-val" id="statLambda">50.0 m</span></div>
+      <div class="stat-item"><span class="stat-label">T =</span><span class="stat-val" id="statPeriod">0.33 s</span></div>
+      <div class="stat-item"><span class="stat-label">v =</span><span class="stat-val" id="statV">150 m/s</span></div>
+      <div class="stat-item"><span class="stat-label">JENIS =</span><span class="stat-val" id="statType">Transversal</span></div>
+    </div>
+    <div class="sim-hint">Animasi gelombang berjalan. Partikel berwarna menunjukkan arah getar masing-masing.</div>
+  </div>
+</section>
+
+<!-- ============================
+     2. BANDUL
+     ============================ -->
+<section class="section" id="sec-bandul">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <div class="sec-icon" style="background:rgba(126,184,255,0.1);">🔵</div>
+    <div><div class="sec-title">Bandul Matematis</div></div>
+  </div>
+
+  <p class="prose">
+    Bandul adalah massa yang digantungkan pada tali tak elastis dan berosilasi akibat gravitasi. Untuk simpangan kecil (&lt;15°), gerakannya bersifat <strong>harmonis sederhana (SHM)</strong>. Periode bandul hanya bergantung pada panjang tali dan percepatan gravitasi, <em>bukan pada massa benda maupun amplitudo</em>.
+  </p>
+
+  <div class="formula-strip">
+    <div>
+      <div class="f-label">PERIODE BANDUL</div>
+      <div class="f-eq">T = 2π √(L/g)</div>
+    </div>
+    <div class="f-vars">
+      T = periode (s) &nbsp;|&nbsp; L = panjang tali (m)<br>
+      g = percepatan gravitasi (9.8 m/s²)<br>
+      f = 1/T (Hz)
+    </div>
+  </div>
+  <div class="fbox-row">
+    <div class="fbox">
+      <div class="fb-label">ENERGI KINETIK MAX</div>
+      <div class="fb-eq">Ek = ½mv²</div>
+      <div class="fb-note">di titik terendah lintasan</div>
+    </div>
+    <div class="fbox">
+      <div class="fb-label">ENERGI POTENSIAL MAX</div>
+      <div class="fb-eq">Ep = mgh</div>
+      <div class="fb-note">di ujung amplitudo</div>
+    </div>
+    <div class="fbox">
+      <div class="fb-label">FREKUENSI SUDUT</div>
+      <div class="fb-eq">ω = √(g/L)</div>
+      <div class="fb-note">rad/s</div>
+    </div>
+  </div>
+
+  <div class="sim-wrap">
+    <div class="sim-toolbar">
+      <button class="tb-btn active" id="btnPendPlay" onclick="togglePendulum()">▶ Lepas</button>
+      <button class="tb-btn" onclick="resetPendulum()">↺ Reset</button>
+      <div class="tb-sep"></div>
+      <span class="tb-label">Seret bandul untuk ubah sudut</span>
+    </div>
+    <canvas id="pendulumCanvas" class="sim-c" height="380"></canvas>
+    <div class="slider-group">
+      <div class="sl-row">
+        <label>PANJANG TALI (L)</label>
+        <input type="range" id="pendLSlider" min="50" max="220" value="140" oninput="setPendL(this.value)" style="width:100px">
+        <span id="pendLVal">1.40 m</span>
+      </div>
+      <div class="sl-row">
+        <label>MASSA (m)</label>
+        <input type="range" id="pendMSlider" min="1" max="20" value="8" oninput="setPendM(this.value)" style="width:100px">
+        <span id="pendMVal">0.8 kg</span>
+      </div>
+      <div class="sl-row">
+        <label>GRAVITASI (g)</label>
+        <select class="tb-sel" onchange="setPendG(this.value)">
+          <option value="9.8">Bumi 9.8 m/s²</option>
+          <option value="1.62">Bulan 1.62 m/s²</option>
+          <option value="3.72">Mars 3.72 m/s²</option>
+          <option value="24.8">Jupiter 24.8 m/s²</option>
+        </select>
+      </div>
+    </div>
+    <div class="sim-status">
+      <div class="stat-item"><span class="stat-label">T =</span><span class="stat-val" id="pendT">—</span></div>
+      <div class="stat-item"><span class="stat-label">f =</span><span class="stat-val" id="pendF">—</span></div>
+      <div class="stat-item"><span class="stat-label">θ =</span><span class="stat-val" id="pendAngle">—</span></div>
+      <div class="stat-item"><span class="stat-label">Ek =</span><span class="stat-val" id="pendEk">—</span></div>
+      <div class="stat-item"><span class="stat-label">Ep =</span><span class="stat-val" id="pendEp">—</span></div>
+    </div>
+    <div class="sim-hint">💡 Seret bola bandul untuk mengatur sudut awal • Lepas untuk memulai ayunan</div>
+  </div>
+</section>
+
+<!-- ============================
+     3. PEGAS & SLINKI
+     ============================ -->
+<section class="section" id="sec-pegas">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <div class="sec-icon" style="background:rgba(240,165,0,0.1);">🌀</div>
+    <div><div class="sec-title">Pegas & Slinki</div></div>
+  </div>
+
+  <p class="prose">
+    Pegas adalah benda elastis yang mengikuti <strong>Hukum Hooke</strong>: gaya pemulih sebanding dengan simpangan. Sistem massa-pegas menghasilkan gerak harmonis sederhana. <strong>Slinki</strong> (spring toy) adalah demonstrasi terbaik gelombang longitudinal — saat ujungnya didorong, rapatan dan regangan merambat di sepanjang slinki.
+  </p>
+
+  <div class="formula-strip">
+    <div>
+      <div class="f-label">HUKUM HOOKE</div>
+      <div class="f-eq">F = −k · x</div>
+    </div>
+    <div class="f-vars">
+      F = gaya pemulih (N) &nbsp;|&nbsp; k = konstanta pegas (N/m)<br>
+      x = simpangan dari posisi setimbang (m)<br>
+      Tanda minus = gaya selalu ke arah setimbang
+    </div>
+  </div>
+  <div class="fbox-row">
+    <div class="fbox">
+      <div class="fb-label">PERIODE PEGAS</div>
+      <div class="fb-eq">T = 2π √(m/k)</div>
+      <div class="fb-note">m=massa (kg), k=konstanta pegas</div>
+    </div>
+    <div class="fbox">
+      <div class="fb-label">FREKUENSI</div>
+      <div class="fb-eq">f = (1/2π)√(k/m)</div>
+      <div class="fb-note">semakin kaku, semakin cepat</div>
+    </div>
+    <div class="fbox">
+      <div class="fb-label">ENERGI PEGAS</div>
+      <div class="fb-eq">Ep = ½kx²</div>
+      <div class="fb-note">energi tersimpan dalam pegas</div>
+    </div>
+    <div class="fbox">
+      <div class="fb-label">KECEPATAN MAX</div>
+      <div class="fb-eq">v_max = A·ω</div>
+      <div class="fb-note">ω = √(k/m) rad/s</div>
+    </div>
+  </div>
+
+  <div class="sim-wrap">
+    <div class="sim-toolbar">
+      <span class="tb-label">MODE:</span>
+      <button class="tb-btn active" id="btnSpring" onclick="setSlinkyMode('spring')">🌀 Pegas</button>
+      <button class="tb-btn" id="btnSlinky" onclick="setSlinkyMode('slinky')">≋ Slinki Longitudinal</button>
+      <div class="tb-sep"></div>
+      <button class="tb-btn" onclick="toggleSpringPause()" id="btnSpringPause">⏸ Jeda</button>
+      <button class="tb-btn" onclick="resetSpring()">↺ Reset</button>
+    </div>
+    <canvas id="springCanvas" class="sim-c" height="320"></canvas>
+    <div class="slider-group">
+      <div class="sl-row">
+        <label>MASSA (m)</label>
+        <input type="range" id="springM" min="1" max="20" value="5" oninput="setSpringM(this.value)" style="width:90px">
+        <span id="springMVal">5 kg</span>
+      </div>
+      <div class="sl-row">
+        <label>KONSTANTA (k)</label>
+        <input type="range" id="springK" min="5" max="100" value="30" oninput="setSpringK(this.value)" style="width:90px">
+        <span id="springKVal">30 N/m</span>
+      </div>
+      <div class="sl-row">
+        <label>AMPLITUDO (A)</label>
+        <input type="range" id="springA" min="10" max="80" value="50" oninput="setSpringA(this.value)" style="width:90px">
+        <span id="springAVal">50 px</span>
+      </div>
+    </div>
+    <div class="sim-status">
+      <div class="stat-item"><span class="stat-label">T =</span><span class="stat-val" id="springT">—</span></div>
+      <div class="stat-item"><span class="stat-label">f =</span><span class="stat-val" id="springF">—</span></div>
+      <div class="stat-item"><span class="stat-label">ω =</span><span class="stat-val" id="springOmega">—</span></div>
+      <div class="stat-item"><span class="stat-label">v_max =</span><span class="stat-val" id="springVmax">—</span></div>
+    </div>
+    <div class="sim-hint">💡 Mode Pegas: massa-pegas vertikal. Mode Slinki: dorong-tarik menghasilkan gelombang longitudinal.</div>
+  </div>
+</section>
+
+<!-- ============================
+     4. BUNYI
+     ============================ -->
+<section class="section" id="sec-bunyi">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <div class="sec-icon" style="background:rgba(255,92,122,0.1);">🔊</div>
+    <div><div class="sec-title">Gelombang Bunyi</div></div>
+  </div>
+
+  <div class="highlight-box red">
+    <strong>Definisi:</strong> Bunyi adalah gelombang <strong>mekanik longitudinal</strong> yang terbentuk dari rapatan dan regangan partikel medium. Bunyi membutuhkan medium untuk merambat — tidak dapat merambat di ruang hampa (vakum).
+  </div>
+
+  <div class="formula-strip">
+    <div>
+      <div class="f-label">CEPAT RAMBAT BUNYI DI UDARA</div>
+      <div class="f-eq">v = 331 + 0,6T  (m/s)</div>
+    </div>
+    <div class="f-vars">
+      T = suhu udara dalam °C<br>
+      Pada 0°C: v = 331 m/s<br>
+      Pada 25°C: v = 331 + 0,6(25) = 346 m/s
+    </div>
+  </div>
+  <div class="fbox-row">
+    <div class="fbox">
+      <div class="fb-label">INTENSITAS BUNYI</div>
+      <div class="fb-eq">I = P / A</div>
+      <div class="fb-note">P=daya (W), A=luas (m²)</div>
+    </div>
+    <div class="fbox">
+      <div class="fb-label">TARAF INTENSITAS</div>
+      <div class="fb-eq">TI = 10 log(I/I₀)</div>
+      <div class="fb-note">satuan desibel (dB), I₀ = 10⁻¹² W/m²</div>
+    </div>
+    <div class="fbox">
+      <div class="fb-label">EFEK DOPPLER</div>
+      <div class="fb-eq">f' = f·(v±vₒ)/(v∓vₛ)</div>
+      <div class="fb-note">vₒ=kecepatan pengamat, vₛ=sumber</div>
+    </div>
+    <div class="fbox">
+      <div class="fb-label">CEPAT RAMBAT (MEDIUM)</div>
+      <div class="fb-eq">v = √(E/ρ)</div>
+      <div class="fb-note">E=modulus elastisitas, ρ=densitas</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="info-card">
+      <h4>🎵 Sifat Fisis Bunyi</h4>
+      <p><strong>Frekuensi</strong> → tinggi rendah nada<br>
+      <strong>Amplitudo</strong> → keras lemah bunyi<br>
+      <strong>Bentuk gelombang</strong> → warna/timbre suara<br>
+      Manusia: 20 Hz – 20.000 Hz (audiosonik)</p>
+    </div>
+    <div class="info-card">
+      <h4>📊 Rentang Frekuensi</h4>
+      <p><strong style="color:var(--accent3)">Infrasonik</strong>: &lt;20 Hz (gajah, paus)<br>
+      <strong style="color:var(--accent)">Audiosonik</strong>: 20–20.000 Hz (manusia)<br>
+      <strong style="color:var(--accent2)">Ultrasonik</strong>: &gt;20.000 Hz (kelelawar, sonar)<br>
+      Kelelawar: bisa sampai 120.000 Hz!</p>
+    </div>
+  </div>
+
+  <table class="data-table">
+    <thead><tr><th>Medium</th><th>Kecepatan Bunyi</th><th>Suhu</th><th>Keterangan</th></tr></thead>
+    <tbody>
+      <tr><td>Udara (kering)</td><td>343 m/s</td><td>20°C</td><td>Paling lambat</td></tr>
+      <tr><td>Air laut</td><td>1.522 m/s</td><td>25°C</td><td>Digunakan sonar kapal</td></tr>
+      <tr><td>Air tawar</td><td>1.481 m/s</td><td>20°C</td><td>—</td></tr>
+      <tr><td>Beton</td><td>~3.100 m/s</td><td>—</td><td>Sangat efisien</td></tr>
+      <tr><td>Besi / Baja</td><td>~5.000 m/s</td><td>—</td><td>Padat sangat cepat</td></tr>
+      <tr><td>Granit</td><td>~6.000 m/s</td><td>—</td><td>Terkeras alami</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================
+     5. RESONANSI
+     ============================ -->
+<section class="section" id="sec-resonansi">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <div class="sec-icon" style="background:rgba(126,184,255,0.1);">🎵</div>
+    <div><div class="sec-title">Resonansi</div></div>
+  </div>
+
+  <div class="highlight-box blue">
+    <strong>Resonansi</strong> terjadi ketika suatu benda bergetar dengan <strong>frekuensi alaminya</strong> akibat dorongan dari sumber getaran lain yang memiliki frekuensi sama. Saat resonansi, amplitudo getaran meningkat drastis — bisa memecahkan gelas kristal atau meruntuhkan jembatan!
+  </div>
+
+  <div class="formula-strip">
+    <div>
+      <div class="f-label">KONDISI RESONANSI KOLOM UDARA (PIPA TERBUKA)</div>
+      <div class="f-eq">L = n · λ/2  → fₙ = n·v / (2L)</div>
+    </div>
+    <div class="f-vars">
+      L = panjang kolom udara (m) &nbsp;|&nbsp; n = 1,2,3,... (harmonik)<br>
+      v = cepat rambat bunyi &nbsp;|&nbsp; fₙ = frekuensi harmonik ke-n
+    </div>
+  </div>
+  <div class="formula-strip" style="border-left-color:var(--accent2);">
+    <div>
+      <div class="f-label" style="color:var(--accent2)">PIPA TERTUTUP SATU UJUNG</div>
+      <div class="f-eq">L = (2n−1) · λ/4  → fₙ = (2n−1)·v / (4L)</div>
+    </div>
+    <div class="f-vars">
+      Hanya menghasilkan harmonik ganjil (n = 1, 3, 5, ...)<br>
+      Contoh: klarinet, organ pipa tertutup
+    </div>
+  </div>
+
+  <div class="sim-wrap">
+    <div class="sim-toolbar">
+      <span class="tb-label">JENIS PIPA:</span>
+      <button class="tb-btn active" id="btnPipaTerbuka" onclick="setPipe('terbuka')">Terbuka 2 Ujung</button>
+      <button class="tb-btn" id="btnPipaTertutup" onclick="setPipe('tertutup')">Tertutup 1 Ujung</button>
+      <div class="tb-sep"></div>
+      <span class="tb-label">HARMONIK:</span>
+      <button class="tb-btn active" id="btnH1" onclick="setHarmonic(1)">n=1</button>
+      <button class="tb-btn" id="btnH2" onclick="setHarmonic(2)">n=2</button>
+      <button class="tb-btn" id="btnH3" onclick="setHarmonic(3)">n=3</button>
+      <button class="tb-btn" id="btnH4" onclick="setHarmonic(4)">n=4</button>
+    </div>
+    <canvas id="resonanceCanvas" class="sim-c" height="260"></canvas>
+    <div class="slider-group">
+      <div class="sl-row">
+        <label>PANJANG PIPA (L)</label>
+        <input type="range" id="pipeL" min="100" max="500" value="300" oninput="setPipeLen(this.value)" style="width:110px">
+        <span id="pipeLVal">300 px</span>
+      </div>
+      <div class="sl-row">
+        <label>CEPAT RAMBAT (v)</label>
+        <input type="range" id="pipeV" min="300" max="500" value="343" oninput="setPipeV(this.value)" style="width:110px">
+        <span id="pipeVVal">343 m/s</span>
+      </div>
+    </div>
+    <div class="sim-status">
+      <div class="stat-item"><span class="stat-label">λ =</span><span class="stat-val" id="resLambda">—</span></div>
+      <div class="stat-item"><span class="stat-label">f =</span><span class="stat-val" id="resFreq">—</span></div>
+      <div class="stat-item"><span class="stat-label">HARMONIK =</span><span class="stat-val" id="resHarm">—</span></div>
+      <div class="stat-item"><span class="stat-label">SIMPUL =</span><span class="stat-val" id="resNodes">—</span></div>
+      <div class="stat-item"><span class="stat-label">PERUT =</span><span class="stat-val" id="resBellies">—</span></div>
+    </div>
+  </div>
+
+  <div class="cards-grid" style="margin-top:20px;">
+    <div class="card"><div class="card-icon">🏛</div><div class="card-title">Jembatan Tacoma</div><div class="card-desc">1940 — Jembatan runtuh karena angin menyebabkan resonansi pada struktur jembatan. Contoh resonansi destruktif paling terkenal.</div></div>
+    <div class="card"><div class="card-icon">🍷</div><div class="card-title">Gelas Kristal</div><div class="card-desc">Penyanyi opera terlatih dapat memecahkan gelas kristal dengan menyanyikan nada pada frekuensi alami gelas tersebut.</div></div>
+    <div class="card"><div class="card-icon">📻</div><div class="card-title">Radio & TV</div><div class="card-desc">Tuner radio menggunakan resonansi sirkuit LC untuk memilih frekuensi siaran tertentu yang ingin diterima.</div></div>
+    <div class="card"><div class="card-icon">⚕️</div><div class="card-title">MRI</div><div class="card-desc">Magnetic Resonance Imaging memanfaatkan resonansi magnetik inti atom hidrogen untuk menghasilkan citra tubuh.</div></div>
+  </div>
+</section>
+
+<!-- ============================
+     6. SONAR INTERAKTIF
+     ============================ -->
+<section class="section" id="sec-sonar">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <div class="sec-icon" style="background:rgba(0,229,195,0.1);">🚢</div>
+    <div><div class="sec-title">Sonar — Kapal Interaktif</div></div>
+  </div>
+
+  <div class="highlight-box">
+    <strong>SONAR</strong> (Sound Navigation And Ranging) menggunakan pantulan gelombang ultrasonik untuk mengukur kedalaman laut dan mendeteksi objek di bawah permukaan air. Prinsipnya: kapal memancarkan pulsa ultrasonik, gema (echo) kembali setelah memantul dari dasar/objek, dan kedalaman dihitung dari selang waktu.
+  </div>
+  <div class="formula-strip">
+    <div>
+      <div class="f-label">RUMUS SONAR / GEMA</div>
+      <div class="f-eq">d = v · t / 2</div>
+    </div>
+    <div class="f-vars">
+      d = kedalaman / jarak objek (m)<br>
+      v = cepat rambat bunyi di air laut (~1522 m/s)<br>
+      t = selang waktu pulsa-gema (s)<br>
+      dibagi 2 karena pulsa pergi-pulang
+    </div>
+  </div>
+
+  <div class="sim-wrap">
+    <div class="sonar-controls">
+      <button class="sonar-big-btn" id="sonarFireBtn" onclick="fireSonar()">📡 TEMBAK SONAR</button>
+      <div class="tb-sep"></div>
+      <span class="tb-label">KECEPATAN:</span>
+      <select class="tb-sel" id="sonarMedium" onchange="updateSonarMedium(this.value)">
+        <option value="1522">Air Laut (1522 m/s)</option>
+        <option value="1481">Air Tawar (1481 m/s)</option>
+        <option value="343">Udara (343 m/s)</option>
+      </select>
+      <div class="tb-sep"></div>
+      <span class="tb-label">OBJEK:</span>
+      <button class="tb-btn" onclick="addSonarObject()">+ Tambah Objek</button>
+      <button class="tb-btn" onclick="clearSonarObjects()">✕ Clear</button>
+      <div class="tb-sep"></div>
+      <span class="tb-label">KEDALAMAN LAUT:</span>
+      <input type="range" id="seaDepth" min="200" max="500" value="320" oninput="setSeaDepth(this.value)" style="width:90px">
+      <span id="seaDepthVal">320m</span>
+    </div>
+    <div class="sonar-display">
+      <canvas id="sonarCanvas" class="sim-c" height="440"></canvas>
+      <div class="sonar-readout">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:2px;color:var(--text3);margin-bottom:4px;">SONAR DISPLAY</div>
+        <div class="readout-val">
+          <div class="rv-label">KEDALAMAN TERDETEKSI</div>
+          <div class="rv-num" id="sonarDepth">— m</div>
+        </div>
+        <div class="readout-val">
+          <div class="rv-label">WAKTU TEMPUH</div>
+          <div class="rv-num" id="sonarTime">— ms</div>
+        </div>
+        <div class="readout-val">
+          <div class="rv-label">OBJEK TERDETEKSI</div>
+          <div class="rv-num" id="sonarObj">0</div>
+        </div>
+        <div class="readout-val">
+          <div class="rv-label">MEDIUM</div>
+          <div class="rv-num" style="font-size:0.85rem" id="sonarMedLabel">Air Laut</div>
+        </div>
+        <div class="depth-bar-wrap">
+          <div class="depth-label">KEDALAMAN RELATIF</div>
+          <div class="depth-bar" id="depthBar" style="width:60%"></div>
+        </div>
+        <div style="margin-top:auto;padding-top:12px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text3);line-height:1.8;">
+          Klik area laut untuk menambah objek di posisi tersebut
+        </div>
+      </div>
+    </div>
+    <div class="sim-legend">
+      <div class="leg-i"><div class="leg-line" style="background:#00e5c3"></div> Pulsa Sonar</div>
+      <div class="leg-i"><div class="leg-line" style="background:#f0a500"></div> Gema Pantul</div>
+      <div class="leg-i"><div class="leg-line" style="background:#ff5c7a"></div> Objek Terdeteksi</div>
+      <div class="leg-i"><div class="leg-line" style="background:#7eb8ff"></div> Dasar Laut</div>
+    </div>
+    <div class="sim-hint">💡 Klik tombol TEMBAK SONAR untuk mengirim pulsa • Klik area laut untuk menambah objek (kapal selam, ikan besar, dll)</div>
+  </div>
+</section>
+
+</div><!-- /page -->
+
+<footer>PEMBELAJARAN GELOMBANG INTERAKTIF • FISIKA SMP/SMA • MEKANIKA GELOMBANG & AKUSTIK</footer>
+
+<script>
+/* ================================================================
+   HERO WAVE ANIMATION
+   ================================================================ */
+(function(){
+  const hc = document.getElementById('heroWave');
+  const hx = hc.getContext('2d');
+  let hw, hh, ht = 0;
+  function resizeHero(){hw=hc.width=hc.offsetWidth;hh=hc.height=hc.offsetHeight||180;}
+  function drawHero(){
+    hx.clearRect(0,0,hw,hh);
+    for(let w=0;w<3;w++){
+      hx.beginPath();
+      const amp=12+w*8, freq=0.012-w*0.002, speed=0.03+w*0.01, alpha=0.15-w*0.04;
+      for(let x=0;x<=hw;x+=2){
+        const y=hh/2+amp*Math.sin(freq*x+ht*speed+w*1.2)+amp*0.5*Math.sin(freq*2*x-ht*speed*1.5+w);
+        x===0?hx.moveTo(x,y):hx.lineTo(x,y);
+      }
+      hx.strokeStyle=`rgba(0,229,195,${alpha})`;
+      hx.lineWidth=1.5;hx.stroke();
+    }
+    ht++;
+    requestAnimationFrame(drawHero);
+  }
+  resizeHero();drawHero();
+  window.addEventListener('resize',resizeHero);
+})();
+
+/* ================================================================
+   1. WAVE SIMULATOR (TRANSVERSAL / LONGITUDINAL)
+   ================================================================ */
+const waveCanvas = document.getElementById('waveCanvas');
+const wCtx = waveCanvas.getContext('2d');
+let wW, wH, wT = 0;
+let wAmp = 35, wFreq = 3, wSpeed = 150;
+let wType = 'transversal';
+let showParticles = true;
+let wPaused = false;
+let wAnimId;
+
+function initWave(){
+  wW = waveCanvas.offsetWidth; wH = 200;
+  waveCanvas.width = wW; waveCanvas.height = wH;
+  updateWaveStats();
+}
+
+function setWaveType(t){
+  wType = t;
+  document.getElementById('btnTrans').classList.toggle('active', t==='transversal');
+  document.getElementById('btnLong').classList.toggle('active', t==='longitudinal');
+  document.getElementById('statType').textContent = t==='transversal'?'Transversal':'Longitudinal';
+}
+function toggleParticles(){
+  showParticles=!showParticles;
+  document.getElementById('btnParticle').classList.toggle('active',showParticles);
+  document.getElementById('btnParticle').textContent=showParticles?'ON':'OFF';
+}
+function togglePause(){
+  wPaused=!wPaused;
+  document.getElementById('btnPause').textContent=wPaused?'▶ Lanjut':'⏸ Jeda';
+}
+function setAmp(v){wAmp=parseInt(v);document.getElementById('ampVal').textContent=v;updateWaveStats();}
+function setFreq(v){wFreq=parseFloat(v);document.getElementById('freqVal').textContent=v+' Hz';updateWaveStats();}
+function setSpeed(v){wSpeed=parseInt(v);document.getElementById('speedVal').textContent=v+' m/s';updateWaveStats();}
+function updateWaveStats(){
+  const lambda=(wSpeed/wFreq).toFixed(1);
+  const period=(1/wFreq).toFixed(3);
+  document.getElementById('statLambda').textContent=lambda+' m';
+  document.getElementById('statPeriod').textContent=period+' s';
+  document.getElementById('statV').textContent=wSpeed+' m/s';
+}
+
+function drawWave(){
+  wCtx.clearRect(0,0,wW,wH);
+  // Dark ocean bg
+  const bg=wCtx.createLinearGradient(0,0,0,wH);
+  bg.addColorStop(0,'#060d14');bg.addColorStop(1,'#0d1e2d');
+  wCtx.fillStyle=bg;wCtx.fillRect(0,0,wW,wH);
+
+  const cy=wH/2;
+  const lambda=wSpeed/wFreq;
+  const kScale=wW/200; // visual scale
+
+  if(wType==='transversal'){
+    // Draw wave path
+    wCtx.beginPath();
+    wCtx.shadowColor='rgba(0,229,195,0.5)';wCtx.shadowBlur=8;
+    for(let x=0;x<=wW;x+=1.5){
+      const phase=(x/wW)*2*Math.PI*(wW/lambda)*kScale*0.5 - wT*0.06*wFreq;
+      const y=cy + wAmp*Math.sin(phase);
+      x===0?wCtx.moveTo(x,y):wCtx.lineTo(x,y);
+    }
+    wCtx.strokeStyle='#00e5c3';wCtx.lineWidth=2.5;wCtx.stroke();
+    wCtx.shadowBlur=0;
+
+    // Axis
+    wCtx.strokeStyle='rgba(255,255,255,0.08)';wCtx.lineWidth=1;wCtx.setLineDash([4,4]);
+    wCtx.beginPath();wCtx.moveTo(0,cy);wCtx.lineTo(wW,cy);wCtx.stroke();
+    wCtx.setLineDash([]);
+
+    // Particles
+    if(showParticles){
+      const nPart=Math.floor(wW/30);
+      for(let i=0;i<nPart;i++){
+        const px=i*30+15;
+        const phase=(px/wW)*2*Math.PI*(wW/lambda)*kScale*0.5 - wT*0.06*wFreq;
+        const py=cy+wAmp*Math.sin(phase);
+        const vy=wAmp*Math.cos(phase);
+        const speed=Math.abs(vy)/wAmp;
+        // particle trail — vertical motion
+        wCtx.beginPath();
+        wCtx.moveTo(px,cy);wCtx.lineTo(px,py);
+        wCtx.strokeStyle='rgba(240,165,0,0.2)';wCtx.lineWidth=1;wCtx.stroke();
+        // dot
+        wCtx.beginPath();wCtx.arc(px,py,4,0,Math.PI*2);
+        const hue=speed>0.5?'#f0a500':'#7eb8ff';
+        wCtx.fillStyle=hue;wCtx.fill();
+      }
+      // Label
+      wCtx.fillStyle='rgba(0,229,195,0.5)';
+      wCtx.font='10px JetBrains Mono';
+      wCtx.fillText('↕ arah getar (⊥ rambat)',10,16);
+      wCtx.fillStyle='rgba(240,165,0,0.5)';
+      wCtx.fillText('→ arah rambat',10,30);
+    }
+
+    // Wavelength annotation
+    const wlPx=lambda*kScale*50;
+    if(wlPx<wW){
+      const wx=30;
+      wCtx.strokeStyle='rgba(255,255,255,0.3)';wCtx.lineWidth=1;
+      wCtx.beginPath();
+      wCtx.moveTo(wx,wH-20);wCtx.lineTo(wx+wlPx,wH-20);wCtx.stroke();
+      wCtx.beginPath();
+      wCtx.moveTo(wx,wH-24);wCtx.lineTo(wx,wH-16);
+      wCtx.moveTo(wx+wlPx,wH-24);wCtx.lineTo(wx+wlPx,wH-16);wCtx.stroke();
+      wCtx.fillStyle='rgba(255,255,255,0.5)';
+      wCtx.font='11px JetBrains Mono';wCtx.textAlign='center';
+      wCtx.fillText('λ',(wx+wx+wlPx)/2,wH-6);
+      wCtx.textAlign='left';
+    }
+
+    // Amplitude annotation
+    wCtx.strokeStyle='rgba(255,92,122,0.4)';wCtx.lineWidth=1;
+    wCtx.beginPath();
+    wCtx.moveTo(wW-40,cy);wCtx.lineTo(wW-40,cy-wAmp);wCtx.stroke();
+    wCtx.fillStyle='rgba(255,92,122,0.6)';
+    wCtx.font='11px JetBrains Mono';wCtx.textAlign='center';
+    wCtx.fillText('A',wW-32,cy-wAmp/2);
+    wCtx.textAlign='left';
+
+  } else {
+    // LONGITUDINAL — density visualization
+    const nPart=Math.floor(wW/16);
+    for(let i=0;i<nPart;i++){
+      const baseX=i*(wW/nPart);
+      const phase=(baseX/wW)*2*Math.PI*4 - wT*0.05*wFreq;
+      const disp=wAmp*0.4*Math.sin(phase);
+      const px=baseX+disp;
+      // color by density/compression
+      const compression=Math.cos(phase);
+      const r=compression>0?Math.floor(0+compression*200):0;
+      const g=compression>0?Math.floor(229-compression*100):Math.floor(229+compression*100);
+      const b=compression>0?Math.floor(195-compression*100):Math.floor(195+compression*50);
+
+      wCtx.beginPath();
+      wCtx.rect(px-4,cy-20,8,40);
+      wCtx.fillStyle=`rgba(${r},${g},${b},0.8)`;
+      wCtx.fill();
+
+      if(showParticles){
+        wCtx.beginPath();wCtx.arc(px,cy,3.5,0,Math.PI*2);
+        wCtx.fillStyle='#fff';wCtx.fill();
+      }
+    }
+
+    // Labels
+    wCtx.fillStyle='rgba(0,229,195,0.6)';
+    wCtx.font='10px JetBrains Mono';
+    wCtx.fillText('RAPATAN',wW*0.15,wH-8);
+    wCtx.fillStyle='rgba(126,184,255,0.6)';
+    wCtx.fillText('REGANGAN',wW*0.5,wH-8);
+    wCtx.fillStyle='rgba(255,255,255,0.4)';
+    wCtx.fillText('↔ arah getar // arah rambat →',10,16);
+  }
+  if(!wPaused)wT++;
+}
+
+function waveLoop(){waveLoop.id=requestAnimationFrame(waveLoop);drawWave();}
+
+/* ================================================================
+   2. PENDULUM
+   ================================================================ */
+const pendCanvas=document.getElementById('pendulumCanvas');
+const pCtx=pendCanvas.getContext('2d');
+let pW,pH;
+let pendL=140, pendM=0.8, pendG=9.8;
+let pendAngle=Math.PI/5;
+let pendOmega=0;
+let pendRunning=false;
+let pendDragging=false;
+let pendAnimId;
+let pendT0=0,pendCycles=0,pendLastAngle=0;
+const pendPivotX=()=>pW/2, pendPivotY=()=>pH*0.08;
+
+function initPendulum(){
+  pW=pendCanvas.offsetWidth;pH=380;
+  pendCanvas.width=pW;pendCanvas.height=pH;
+  drawPendulum();
+}
+function setPendL(v){pendL=parseInt(v);document.getElementById('pendLVal').textContent=(v/100).toFixed(2)+' m';resetPendulum();}
+function setPendM(v){pendM=v/10;document.getElementById('pendMVal').textContent=(v/10).toFixed(1)+' kg';resetPendulum();}
+function setPendG(v){pendG=parseFloat(v);resetPendulum();}
+
+function togglePendulum(){
+  pendRunning=!pendRunning;
+  document.getElementById('btnPendPlay').textContent=pendRunning?'⏸ Jeda':'▶ Lepas';
+}
+function resetPendulum(){
+  pendRunning=false;
+  pendAngle=Math.PI/5;pendOmega=0;
+  document.getElementById('btnPendPlay').textContent='▶ Lepas';
+  updatePendInfo();drawPendulum();
+}
+
+function updatePendInfo(){
+  const T=2*Math.PI*Math.sqrt(pendL/100/pendG);
+  document.getElementById('pendT').textContent=T.toFixed(3)+' s';
+  document.getElementById('pendF').textContent=(1/T).toFixed(3)+' Hz';
+  document.getElementById('pendAngle').textContent=(pendAngle*180/Math.PI).toFixed(1)+'°';
+  const h=pendL/100*(1-Math.cos(pendAngle));
+  const maxH=pendL/100*(1-Math.cos(Math.PI/5));
+  const Ep=pendM*pendG*h;
+  const Ek=pendM*pendG*(maxH-h);
+  document.getElementById('pendEp').textContent=Ep.toFixed(4)+' J';
+  document.getElementById('pendEk').textContent=Ek.toFixed(4)+' J';
+}
+
+function drawPendulum(){
+  pCtx.clearRect(0,0,pW,pH);
+  const bg=pCtx.createLinearGradient(0,0,0,pH);
+  bg.addColorStop(0,'#060d14');bg.addColorStop(1,'#091520');
+  pCtx.fillStyle=bg;pCtx.fillRect(0,0,pW,pH);
+
+  const px=pendPivotX(),py=pendPivotY();
+  const scale=Math.min(pW,pH)*0.55/1.5;
+  const bx=px+pendL/100*scale*Math.sin(pendAngle);
+  const by=py+pendL/100*scale*Math.cos(pendAngle);
+  const ballR=Math.max(10,pendM*4+8);
+
+  // Pivot wall
+  pCtx.fillStyle='rgba(255,255,255,0.08)';
+  pCtx.fillRect(0,py-4,pW,8);
+  pCtx.fillStyle='rgba(255,255,255,0.15)';
+  pCtx.beginPath();pCtx.arc(px,py,6,0,Math.PI*2);pCtx.fill();
+
+  // Trace arc
+  pCtx.beginPath();
+  pCtx.arc(px,py,pendL/100*scale,Math.PI/2-0.8,Math.PI/2+0.8);
+  pCtx.strokeStyle='rgba(0,229,195,0.08)';pCtx.lineWidth=1;pCtx.setLineDash([3,5]);pCtx.stroke();pCtx.setLineDash([]);
+
+  // Equilibrium vertical
+  pCtx.beginPath();pCtx.moveTo(px,py);pCtx.lineTo(px,py+pendL/100*scale+20);
+  pCtx.strokeStyle='rgba(255,255,255,0.1)';pCtx.lineWidth=1;pCtx.setLineDash([4,4]);pCtx.stroke();pCtx.setLineDash([]);
+
+  // String
+  const strGrad=pCtx.createLinearGradient(px,py,bx,by);
+  strGrad.addColorStop(0,'#7eb8ff');strGrad.addColorStop(1,'#4a8aba');
+  pCtx.beginPath();pCtx.moveTo(px,py);pCtx.lineTo(bx,by);
+  pCtx.strokeStyle=strGrad;pCtx.lineWidth=2;pCtx.stroke();
+
+  // Ball shadow
+  pCtx.beginPath();pCtx.arc(bx+4,by+4,ballR,0,Math.PI*2);
+  pCtx.fillStyle='rgba(0,0,0,0.4)';pCtx.fill();
+
+  // Ball
+  const ballGrad=pCtx.createRadialGradient(bx-ballR*0.3,by-ballR*0.3,0,bx,by,ballR*1.2);
+  ballGrad.addColorStop(0,'#fff');
+  ballGrad.addColorStop(0.3,pendM>1?'#f0a500':'#00e5c3');
+  ballGrad.addColorStop(1,'#0a3060');
+  pCtx.beginPath();pCtx.arc(bx,by,ballR,0,Math.PI*2);
+  pCtx.fillStyle=ballGrad;pCtx.fill();
+  pCtx.shadowColor=pendM>1?'rgba(240,165,0,0.5)':'rgba(0,229,195,0.5)';
+  pCtx.shadowBlur=14;pCtx.stroke();pCtx.shadowBlur=0;
+
+  // Velocity arrow
+  const speed=Math.abs(pendOmega)*pendL/100*scale*0.6;
+  if(speed>3){
+    const vdx=Math.cos(pendAngle)*pendOmega*scale*0.15;
+    const vdy=-Math.sin(pendAngle)*Math.abs(pendOmega)*scale*0.15;
+    pCtx.beginPath();pCtx.moveTo(bx,by);pCtx.lineTo(bx+vdx,by+vdy);
+    pCtx.strokeStyle='#ff5c7a';pCtx.lineWidth=2;
+    pCtx.setLineDash([]);pCtx.stroke();
+  }
+
+  // Height indicator h
+  const h=pendL/100*scale*(1-Math.cos(pendAngle));
+  const eqY=py+pendL/100*scale;
+  if(h>3){
+    pCtx.beginPath();pCtx.moveTo(bx+ballR+6,by);pCtx.lineTo(bx+ballR+6,eqY);
+    pCtx.strokeStyle='rgba(240,165,0,0.5)';pCtx.lineWidth=1;pCtx.stroke();
+    pCtx.fillStyle='rgba(240,165,0,0.7)';pCtx.font='11px JetBrains Mono';
+    pCtx.fillText('h',bx+ballR+10,(by+eqY)/2);
+  }
+
+  // Info labels
+  const T=2*Math.PI*Math.sqrt(pendL/100/pendG);
+  pCtx.fillStyle='rgba(0,229,195,0.6)';pCtx.font='11px JetBrains Mono';
+  pCtx.fillText(`L=${(pendL/100).toFixed(2)}m  g=${pendG}m/s²  T=${T.toFixed(2)}s`,10,pH-10);
+
+  // Drag handle circle on ball
+  pCtx.beginPath();pCtx.arc(bx,by,ballR+5,0,Math.PI*2);
+  pCtx.strokeStyle='rgba(0,229,195,0.2)';pCtx.lineWidth=1;pCtx.stroke();
+}
+
+function pendulumStep(){
+  if(pendRunning){
+    const dt=0.016;
+    const alpha=-pendG/(pendL/100)*Math.sin(pendAngle);
+    pendOmega+=alpha*dt;
+    pendOmega*=0.999; // tiny damping
+    pendAngle+=pendOmega*dt;
+  }
+  drawPendulum();updatePendInfo();
+  pendAnimId=requestAnimationFrame(pendulumStep);
+}
+
+// Drag pendulum
+pendCanvas.addEventListener('mousedown',e=>{
+  const r=pendCanvas.getBoundingClientRect();
+  const mx=(e.clientX-r.left)*(pW/r.width);
+  const my=(e.clientY-r.top)*(pH/r.height);
+  const px=pendPivotX(),py=pendPivotY();
+  const scale=Math.min(pW,pH)*0.55/1.5;
+  const bx=px+pendL/100*scale*Math.sin(pendAngle);
+  const by=py+pendL/100*scale*Math.cos(pendAngle);
+  const ballR=Math.max(10,pendM*4+8);
+  if(Math.hypot(mx-bx,my-by)<ballR+15){pendDragging=true;pendRunning=false;document.getElementById('btnPendPlay').textContent='▶ Lepas';}
+});
+pendCanvas.addEventListener('mousemove',e=>{
+  if(!pendDragging)return;
+  const r=pendCanvas.getBoundingClientRect();
+  const mx=(e.clientX-r.left)*(pW/r.width);
+  const my=(e.clientY-r.top)*(pH/r.height);
+  const px=pendPivotX(),py=pendPivotY();
+  pendAngle=Math.atan2(mx-px,my-py);
+  pendAngle=Math.max(-Math.PI*0.9,Math.min(Math.PI*0.9,pendAngle));
+  pendOmega=0;
+  drawPendulum();updatePendInfo();
+});
+pendCanvas.addEventListener('mouseup',()=>{pendDragging=false;});
+// Touch
+pendCanvas.addEventListener('touchstart',e=>{
+  const r=pendCanvas.getBoundingClientRect();
+  const mx=(e.touches[0].clientX-r.left)*(pW/r.width);
+  const my=(e.touches[0].clientY-r.top)*(pH/r.height);
+  const px=pendPivotX(),py=pendPivotY();
+  const scale=Math.min(pW,pH)*0.55/1.5;
+  const bx=px+pendL/100*scale*Math.sin(pendAngle);
+  const by=py+pendL/100*scale*Math.cos(pendAngle);
+  const ballR=Math.max(10,pendM*4+8);
+  if(Math.hypot(mx-bx,my-by)<ballR+20){pendDragging=true;pendRunning=false;}
+  e.preventDefault();},{passive:false});
+pendCanvas.addEventListener('touchmove',e=>{
+  if(!pendDragging)return;
+  const r=pendCanvas.getBoundingClientRect();
+  const mx=(e.touches[0].clientX-r.left)*(pW/r.width);
+  const my=(e.touches[0].clientY-r.top)*(pH/r.height);
+  const px=pendPivotX(),py=pendPivotY();
+  pendAngle=Math.atan2(mx-px,my-py);
+  pendAngle=Math.max(-Math.PI*0.9,Math.min(Math.PI*0.9,pendAngle));
+  pendOmega=0;drawPendulum();updatePendInfo();e.preventDefault();},{passive:false});
+pendCanvas.addEventListener('touchend',()=>{pendDragging=false;});
+
+/* ================================================================
+   3. SPRING & SLINKY
+   ================================================================ */
+const springCanvas=document.getElementById('springCanvas');
+const spCtx=springCanvas.getContext('2d');
+let spW,spH,spT=0;
+let springM=5,springK=30,springA_px=50;
+let slinkyMode='spring';
+let spPaused=false;
+
+function initSpring(){spW=springCanvas.offsetWidth;spH=320;springCanvas.width=spW;springCanvas.height=spH;}
+function setSpringM(v){springM=parseInt(v);document.getElementById('springMVal').textContent=v+' kg';updateSpringStats();}
+function setSpringK(v){springK=parseInt(v);document.getElementById('springKVal').textContent=v+' N/m';updateSpringStats();}
+function setSpringA(v){springA_px=parseInt(v);document.getElementById('springAVal').textContent=v+' px';}
+function setSlinkyMode(m){slinkyMode=m;document.getElementById('btnSpring').classList.toggle('active',m==='spring');document.getElementById('btnSlinky').classList.toggle('active',m==='slinky');}
+function toggleSpringPause(){spPaused=!spPaused;document.getElementById('btnSpringPause').textContent=spPaused?'▶ Lanjut':'⏸ Jeda';}
+function resetSpring(){spT=0;spPaused=false;document.getElementById('btnSpringPause').textContent='⏸ Jeda';}
+
+function updateSpringStats(){
+  const omega=Math.sqrt(springK/springM);
+  const T=2*Math.PI/omega;
+  const f=1/T;
+  const vmax=springA_px*0.01*omega;
+  document.getElementById('springT').textContent=T.toFixed(3)+' s';
+  document.getElementById('springF').textContent=f.toFixed(3)+' Hz';
+  document.getElementById('springOmega').textContent=omega.toFixed(2)+' rad/s';
+  document.getElementById('springVmax').textContent=(springA_px*0.01*omega).toFixed(3)+' m/s';
+}
+
+function drawSpring(){
+  spCtx.clearRect(0,0,spW,spH);
+  const bg=spCtx.createLinearGradient(0,0,0,spH);
+  bg.addColorStop(0,'#060d14');bg.addColorStop(1,'#0d1e2d');
+  spCtx.fillStyle=bg;spCtx.fillRect(0,0,spW,spH);
+
+  const omega=Math.sqrt(springK/springM);
+
+  if(slinkyMode==='spring'){
+    // VERTICAL SPRING-MASS
+    const cx=spW/2;
+    const eqY=spH*0.35; // equilibrium center of mass
+    const x=springA_px*Math.cos(omega*spT*0.02);
+    const massY=eqY+x;
+    const springTopY=40;
+    const massR=Math.max(14,springM*2+10);
+
+    // Ceiling
+    spCtx.fillStyle='rgba(255,255,255,0.08)';spCtx.fillRect(0,0,spW,8);
+    spCtx.fillStyle='rgba(255,255,255,0.15)';
+    spCtx.beginPath();spCtx.arc(cx,8,6,0,Math.PI*2);spCtx.fill();
+
+    // Draw spring coils
+    const nCoils=14;
+    const springLen=massY-springTopY-massR;
+    const coilW=30;
+    spCtx.beginPath();spCtx.moveTo(cx,springTopY);
+    for(let i=0;i<=nCoils*2;i++){
+      const progress=i/(nCoils*2);
+      const sy=springTopY+progress*springLen;
+      const sx=cx+(i%2===0?coilW:-coilW);
+      spCtx.lineTo(sx,sy);
+    }
+    spCtx.lineTo(cx,massY-massR);
+    const springColor=x>0?`rgba(0,229,195,0.9)`:`rgba(240,165,0,0.9)`;
+    spCtx.strokeStyle=springColor;spCtx.lineWidth=2.5;spCtx.stroke();
+
+    // Equilibrium line
+    spCtx.strokeStyle='rgba(255,255,255,0.08)';spCtx.lineWidth=1;spCtx.setLineDash([4,4]);
+    spCtx.beginPath();spCtx.moveTo(cx-60,eqY);spCtx.lineTo(cx+60,eqY);spCtx.stroke();spCtx.setLineDash([]);
+
+    // Displacement arrow
+    if(Math.abs(x)>3){
+      spCtx.beginPath();spCtx.moveTo(cx+55,eqY);spCtx.lineTo(cx+55,massY);
+      spCtx.strokeStyle='rgba(255,92,122,0.7)';spCtx.lineWidth=2;spCtx.stroke();
+      spCtx.fillStyle='rgba(255,92,122,0.8)';spCtx.font='11px JetBrains Mono';
+      spCtx.fillText('x='+(x/100).toFixed(2)+'m',cx+60,(eqY+massY)/2+4);
+    }
+
+    // Mass
+    const massGrad=spCtx.createRadialGradient(cx-massR*0.3,massY-massR*0.3,0,cx,massY,massR);
+    massGrad.addColorStop(0,'#fff');massGrad.addColorStop(0.4,'#f0a500');massGrad.addColorStop(1,'#2c1600');
+    spCtx.beginPath();spCtx.arc(cx,massY,massR,0,Math.PI*2);
+    spCtx.fillStyle=massGrad;spCtx.fill();
+    spCtx.shadowColor='rgba(240,165,0,0.4)';spCtx.shadowBlur=12;
+    spCtx.strokeStyle='rgba(240,165,0,0.6)';spCtx.lineWidth=1.5;spCtx.stroke();spCtx.shadowBlur=0;
+    spCtx.fillStyle='#000';spCtx.font=`bold ${Math.max(10,massR*0.7)}px Syne`;spCtx.textAlign='center';
+    spCtx.fillText(springM+'kg',cx,massY+4);spCtx.textAlign='left';
+
+    // Energy bar
+    const Ep=0.5*springK*(x*0.01)**2;
+    const Ek=0.5*springK*(springA_px*0.01)**2-Ep;
+    const maxE=0.5*springK*(springA_px*0.01)**2;
+    const barX=20,barY=spH-60,barW=120,barH=12;
+    spCtx.fillStyle='rgba(255,255,255,0.05)';spCtx.fillRect(barX,barY,barW,barH);
+    spCtx.fillStyle='#f0a500';spCtx.fillRect(barX,barY,(Ep/maxE)*barW,barH);
+    spCtx.fillStyle='rgba(255,255,255,0.05)';spCtx.fillRect(barX,barY+18,barW,barH);
+    spCtx.fillStyle='#00e5c3';spCtx.fillRect(barX,barY+18,(Math.max(0,Ek)/maxE)*barW,barH);
+    spCtx.fillStyle='rgba(240,165,0,0.8)';spCtx.font='9px JetBrains Mono';
+    spCtx.fillText('Ep='+Ep.toFixed(3)+'J',barX,barY-3);
+    spCtx.fillStyle='rgba(0,229,195,0.8)';
+    spCtx.fillText('Ek='+Math.max(0,Ek).toFixed(3)+'J',barX,barY+16);
+
+  } else {
+    // SLINKI LONGITUDINAL
+    const nNodes=40;
+    const baseY=spH*0.5;
+    const nodeSpacing=spW/(nNodes+1);
+
+    // Wave traveling through slinky
+    for(let i=0;i<nNodes;i++){
+      const baseX=(i+1)*nodeSpacing;
+      const phase=(i/nNodes)*Math.PI*4 - spT*0.08;
+      const disp=springA_px*0.4*Math.sin(phase);
+      const x=baseX+disp;
+      const compress=Math.cos(phase);
+      const bright=100+compress*80;
+
+      // Coil between nodes
+      if(i<nNodes-1){
+        const nextDisp=springA_px*0.4*Math.sin(((i+1)/nNodes)*Math.PI*4-spT*0.08);
+        const nx=(i+2)*nodeSpacing+nextDisp;
+        const midX=(x+nx)/2;
+        const coilH=16+compress*8;
+        spCtx.beginPath();spCtx.moveTo(x,baseY);
+        spCtx.bezierCurveTo(midX-6,baseY-coilH,midX+6,baseY+coilH,nx,baseY);
+        spCtx.strokeStyle=`rgba(${Math.min(255,bright+60)},${bright+40},${Math.max(0,bright-60)},0.85)`;
+        spCtx.lineWidth=2;spCtx.stroke();
+      }
+
+      // Node dot
+      spCtx.beginPath();spCtx.arc(x,baseY,3.5,0,Math.PI*2);
+      const g=Math.min(255,100+compress*100);
+      spCtx.fillStyle=`rgb(${Math.min(255,100+compress*60)},${g},${Math.max(0,150-compress*80)})`;
+      spCtx.fill();
+    }
+
+    // Labels
+    spCtx.fillStyle='rgba(0,229,195,0.5)';spCtx.font='10px JetBrains Mono';
+    spCtx.fillText('← RAPATAN (compression)',spW*0.05,spH-30);
+    spCtx.fillStyle='rgba(126,184,255,0.5)';
+    spCtx.fillText('REGANGAN (rarefaction) →',spW*0.55,spH-30);
+    spCtx.fillStyle='rgba(255,255,255,0.3)';
+    spCtx.fillText('≋ gelombang longitudinal: partikel bergerak // arah rambat',spW/2,20);
+    spCtx.textAlign='center';spCtx.textAlign='left';
+  }
+
+  if(!spPaused)spT++;
+}
+
+function springLoop(){springLoop.id=requestAnimationFrame(springLoop);drawSpring();}
+
+/* ================================================================
+   4. RESONANCE CANVAS
+   ================================================================ */
+const resCanvas=document.getElementById('resonanceCanvas');
+const resCtx=resCanvas.getContext('2d');
+let resW,resH,resT=0;
+let pipeType='terbuka', harmonicN=1;
+let pipeLenPx=300, pipeVel=343;
+
+function initResonance(){resW=resCanvas.offsetWidth;resH=260;resCanvas.width=resW;resCanvas.height=resH;}
+function setPipe(t){
+  pipeType=t;
+  document.getElementById('btnPipaTerbuka').classList.toggle('active',t==='terbuka');
+  document.getElementById('btnPipaTertutup').classList.toggle('active',t==='tertutup');
+  // Restrict harmonics for closed pipe
+  if(t==='tertutup' && harmonicN%2===0)setHarmonic(harmonicN+1);
+  drawResonance();updateResStats();
+}
+function setHarmonic(n){
+  if(pipeType==='tertutup' && n%2===0){n=n+1;}
+  if(n>4)n=4;
+  harmonicN=n;
+  [1,2,3,4].forEach(i=>{document.getElementById('btnH'+i).classList.toggle('active',i===n);});
+  drawResonance();updateResStats();
+}
+function setPipeLen(v){pipeLenPx=parseInt(v);document.getElementById('pipeLVal').textContent=v+' px';updateResStats();drawResonance();}
+function setPipeV(v){pipeVel=parseInt(v);document.getElementById('pipeVVal').textContent=v+' m/s';updateResStats();}
+
+function updateResStats(){
+  const L=pipeLenPx/100; // scale: 100px = 1m
+  let lambda,freq,nodes,bellies;
+  if(pipeType==='terbuka'){
+    lambda=2*L/harmonicN;
+    freq=harmonicN*pipeVel/(2*L);
+    nodes=harmonicN-1;
+    bellies=harmonicN;
+  } else {
+    const n=harmonicN%2===0?harmonicN+1:harmonicN;
+    lambda=4*L/n;
+    freq=n*pipeVel/(4*L);
+    nodes=Math.floor(n/2);
+    bellies=Math.ceil(n/2);
+  }
+  document.getElementById('resLambda').textContent=lambda.toFixed(2)+' m';
+  document.getElementById('resFreq').textContent=freq.toFixed(1)+' Hz';
+  document.getElementById('resHarm').textContent='n = '+harmonicN+' (harmonik ke-'+harmonicN+')';
+  document.getElementById('resNodes').textContent=nodes;
+  document.getElementById('resBellies').textContent=bellies;
+}
+
+function drawResonance(){
+  resCtx.clearRect(0,0,resW,resH);
+  const bg=resCtx.createLinearGradient(0,0,0,resH);
+  bg.addColorStop(0,'#060d14');bg.addColorStop(1,'#091520');
+  resCtx.fillStyle=bg;resCtx.fillRect(0,0,resW,resH);
+
+  const margin=40;
+  const pipeX1=(resW-pipeLenPx)/2;
+  const pipeX2=pipeX1+pipeLenPx;
+  const cy=resH/2;
+  const pipeH=70;
+
+  // Pipe walls
+  resCtx.fillStyle='rgba(126,184,255,0.12)';
+  resCtx.fillRect(pipeX1,cy-pipeH/2,pipeLenPx,pipeH);
+
+  resCtx.strokeStyle='rgba(126,184,255,0.4)';resCtx.lineWidth=3;
+  // Top wall
+  resCtx.beginPath();resCtx.moveTo(pipeX1,cy-pipeH/2);resCtx.lineTo(pipeX2,cy-pipeH/2);resCtx.stroke();
+  // Bottom wall
+  resCtx.beginPath();resCtx.moveTo(pipeX1,cy+pipeH/2);resCtx.lineTo(pipeX2,cy+pipeH/2);resCtx.stroke();
+
+  // Left end
+  if(pipeType==='tertutup'){
+    resCtx.fillStyle='rgba(126,184,255,0.5)';
+    resCtx.fillRect(pipeX1-6,cy-pipeH/2,6,pipeH);
+  } else {
+    // Open both ends
+    resCtx.strokeStyle='rgba(0,229,195,0.5)';resCtx.lineWidth=2;resCtx.setLineDash([4,3]);
+    resCtx.beginPath();resCtx.moveTo(pipeX1,cy-pipeH/2-10);resCtx.lineTo(pipeX1,cy+pipeH/2+10);resCtx.stroke();
+  }
+  // Right always open
+  resCtx.strokeStyle='rgba(0,229,195,0.5)';resCtx.lineWidth=2;resCtx.setLineDash([4,3]);
+  resCtx.beginPath();resCtx.moveTo(pipeX2,cy-pipeH/2-10);resCtx.lineTo(pipeX2,cy+pipeH/2+10);resCtx.stroke();
+  resCtx.setLineDash([]);
+
+  // Standing wave
+  resCtx.beginPath();
+  const amp=pipeH*0.4;
+  const tAnim=resT*0.05;
+  for(let xi=0;xi<=pipeLenPx;xi+=2){
+    const relX=xi/pipeLenPx;
+    let y;
+    if(pipeType==='terbuka'){
+      y=cy+amp*Math.sin(harmonicN*Math.PI*relX)*Math.cos(tAnim);
+    } else {
+      const n=harmonicN%2===0?harmonicN+1:harmonicN;
+      y=cy+amp*Math.cos(n*Math.PI*relX/2)*Math.cos(tAnim);
+    }
+    xi===0?resCtx.moveTo(pipeX1+xi,y):resCtx.lineTo(pipeX1+xi,y);
+  }
+  resCtx.shadowColor='rgba(0,229,195,0.6)';resCtx.shadowBlur=8;
+  resCtx.strokeStyle='#00e5c3';resCtx.lineWidth=2.5;resCtx.stroke();resCtx.shadowBlur=0;
+
+  // Node points (simpul)
+  resCtx.fillStyle='#ff5c7a';
+  const nNodes=pipeType==='terbuka'?harmonicN-1:Math.floor((harmonicN%2===0?harmonicN+1:harmonicN)/2);
+  for(let ni=1;ni<=nNodes;ni++){
+    const nx=pipeType==='terbuka'
+      ?pipeX1+(ni/harmonicN)*pipeLenPx
+      :pipeX1+((2*ni-1)/(harmonicN%2===0?harmonicN+1:harmonicN))*pipeLenPx;
+    resCtx.beginPath();resCtx.arc(nx,cy,5,0,Math.PI*2);resCtx.fill();
+    resCtx.fillStyle='rgba(255,92,122,0.6)';resCtx.font='9px JetBrains Mono';
+    resCtx.textAlign='center';resCtx.fillText('S',nx,cy+pipeH/2+18);resCtx.textAlign='left';
+    resCtx.fillStyle='#ff5c7a';
+  }
+
+  // Belly points (perut)
+  resCtx.fillStyle='#f0a500';
+  const nBellies=pipeType==='terbuka'?harmonicN:Math.ceil((harmonicN%2===0?harmonicN+1:harmonicN)/2);
+  for(let bi=0;bi<nBellies;bi++){
+    const bx=pipeType==='terbuka'
+      ?pipeX1+((bi+0.5)/harmonicN)*pipeLenPx
+      :pipeX1+(bi/(nBellies-0.5||1))*pipeLenPx*0.9;
+    if(bx>=pipeX1 && bx<=pipeX2){
+      resCtx.beginPath();resCtx.arc(bx,cy,5,0,Math.PI*2);resCtx.fill();
+      resCtx.fillStyle='rgba(240,165,0,0.6)';resCtx.font='9px JetBrains Mono';
+      resCtx.textAlign='center';resCtx.fillText('P',bx,cy-pipeH/2-8);resCtx.textAlign='left';
+      resCtx.fillStyle='#f0a500';
+    }
+  }
+
+  // Labels
+  resCtx.fillStyle='rgba(126,184,255,0.6)';resCtx.font='10px JetBrains Mono';
+  resCtx.fillText(pipeType==='terbuka'?'◦ Terbuka ◦':'■ Tertutup',pipeX1-2,cy-pipeH/2-20);
+  resCtx.fillText('n='+harmonicN,resW/2-10,resH-8);
+  resCtx.fillStyle='rgba(255,92,122,0.7)';resCtx.fillText('S=Simpul (node)',pipeX1,resH-8);
+  resCtx.fillStyle='rgba(240,165,0,0.7)';resCtx.fillText('P=Perut (antinode)',pipeX1+140,resH-8);
+
+  resT++;
+}
+
+function resLoop(){resLoop.id=requestAnimationFrame(resLoop);drawResonance();}
+
+/* ================================================================
+   5. SONAR
+   ================================================================ */
+const sonarCanvas=document.getElementById('sonarCanvas');
+const sCtx=sonarCanvas.getContext('2d');
+let sW,sH;
+let sonarVel=1522;
+let seaDepthM=320;
+let sonarObjects=[];
+let sonarPulses=[];
+let sonarEchoes=[];
+let shipY;
+let sonarDetected=[];
+let sonarAnimId;
+
+function initSonar(){
+  sW=sonarCanvas.offsetWidth;sH=440;
+  sonarCanvas.width=sW;sonarCanvas.height=sH;
+  shipY=sH*0.12;
+}
+function setSeaDepth(v){
+  seaDepthM=parseInt(v);
+  document.getElementById('seaDepthVal').textContent=v+'m';
+}
+function updateSonarMedium(v){
+  sonarVel=parseInt(v);
+  const labels={'1522':'Air Laut','1481':'Air Tawar','343':'Udara'};
+  document.getElementById('sonarMedLabel').textContent=labels[v]||v+' m/s';
+}
+function addSonarObject(){
+  sonarObjects.push({
+    x:80+Math.random()*(sW-160),
+    yRatio:0.3+Math.random()*0.5,
+    type:Math.random()<0.5?'sub':'fish',
+    size:10+Math.random()*16
+  });
+}
+function clearSonarObjects(){sonarObjects=[];sonarPulses=[];sonarEchoes=[];sonarDetected=[];updateSonarReadout([]);}
+
+function fireSonar(){
+  const btn=document.getElementById('sonarFireBtn');
+  btn.disabled=true;
+  sonarPulses=[];sonarEchoes=[];sonarDetected=[];
+  // Main bottom pulse
+  const shipX=sW/2;
+  sonarPulses.push({x:shipX,y:shipY+30,r:0,maxR:sH,expanding:true,target:'floor',speed:4});
+  // Object pulses
+  sonarObjects.forEach(obj=>{
+    sonarPulses.push({x:shipX,y:shipY+30,r:0,maxR:sH,expanding:true,target:obj,speed:4});
+  });
+  setTimeout(()=>{btn.disabled=false;},3000);
+}
+
+function updateSonarReadout(detected){
+  // Floor depth
+  const floorY=sH*0.82;
+  const totalH=floorY-shipY;
+  const depthScale=seaDepthM/totalH;
+  if(detected.includes('floor')){
+    document.getElementById('sonarDepth').textContent=seaDepthM+' m';
+    const tMs=Math.round((seaDepthM/sonarVel)*2*1000);
+    document.getElementById('sonarTime').textContent=tMs+' ms';
+    const pct=Math.min(100,seaDepthM/500*100);
+    document.getElementById('depthBar').style.width=pct+'%';
+  }
+  document.getElementById('sonarObj').textContent=detected.filter(d=>d!=='floor').length;
+}
+
+function drawSonar(){
+  sCtx.clearRect(0,0,sW,sH);
+  const shipX=sW/2;
+  const floorY=sH*0.82;
+  const waterTop=sH*0.08;
+
+  // Sky gradient
+  const sky=sCtx.createLinearGradient(0,0,0,waterTop);
+  sky.addColorStop(0,'#0a1520');sky.addColorStop(1,'#0d2035');
+  sCtx.fillStyle=sky;sCtx.fillRect(0,0,sW,waterTop);
+
+  // Water gradient
+  const waterGrad=sCtx.createLinearGradient(0,waterTop,0,floorY);
+  waterGrad.addColorStop(0,'#0a2540');
+  waterGrad.addColorStop(0.5,'#051a35');
+  waterGrad.addColorStop(1,'#020d1a');
+  sCtx.fillStyle=waterGrad;sCtx.fillRect(0,waterTop,sW,floorY-waterTop);
+
+  // Sea floor
+  const floorGrad=sCtx.createLinearGradient(0,floorY,0,sH);
+  floorGrad.addColorStop(0,'#2a1800');floorGrad.addColorStop(1,'#0d0800');
+  sCtx.fillStyle=floorGrad;sCtx.fillRect(0,floorY,sW,sH-floorY);
+  // Floor texture bumps
+  sCtx.beginPath();sCtx.moveTo(0,floorY);
+  for(let x=0;x<=sW;x+=20){
+    const bump=Math.sin(x*0.05)*4+Math.sin(x*0.13)*2;
+    sCtx.lineTo(x,floorY+bump);
+  }
+  sCtx.lineTo(sW,sH);sCtx.lineTo(0,sH);sCtx.closePath();
+  sCtx.fillStyle='#1a0e00';sCtx.fill();
+
+  // Water surface shimmer
+  for(let i=0;i<5;i++){
+    sCtx.beginPath();
+    const wy=waterTop+i*1.5;
+    sCtx.moveTo(0,wy);sCtx.lineTo(sW,wy);
+    sCtx.strokeStyle=`rgba(126,184,255,${0.15-i*0.02})`;sCtx.lineWidth=1;sCtx.stroke();
+  }
+
+  // Depth scale on left
+  sCtx.fillStyle='rgba(126,184,255,0.3)';sCtx.font='9px JetBrains Mono';
+  for(let d=0;d<=seaDepthM;d+=50){
+    const dy=waterTop+(d/seaDepthM)*(floorY-waterTop);
+    sCtx.fillText(d+'m',4,dy+4);
+    sCtx.beginPath();sCtx.moveTo(14,dy);sCtx.lineTo(20,dy);
+    sCtx.strokeStyle='rgba(126,184,255,0.15)';sCtx.lineWidth=1;sCtx.stroke();
+  }
+
+  // Draw objects (submarine / fish)
+  sonarObjects.forEach(obj=>{
+    const oy=waterTop+(obj.yRatio)*(floorY-waterTop);
+    const isDetected=sonarDetected.includes(obj);
+    sCtx.save();
+    sCtx.translate(obj.x,oy);
+    if(obj.type==='sub'){
+      // Submarine shape
+      const sw=obj.size*2.5,sh=obj.size*0.8;
+      sCtx.fillStyle=isDetected?'rgba(255,92,122,0.9)':'rgba(60,100,140,0.7)';
+      sCtx.beginPath();sCtx.ellipse(0,0,sw,sh,0,0,Math.PI*2);sCtx.fill();
+      sCtx.strokeStyle=isDetected?'#ff5c7a':'rgba(126,184,255,0.4)';sCtx.lineWidth=1.5;sCtx.stroke();
+      // Conning tower
+      sCtx.fillStyle=isDetected?'rgba(255,92,122,0.8)':'rgba(80,120,160,0.7)';
+      sCtx.fillRect(-sw*0.15,-sh-sh*0.6,sw*0.3,sh*0.6);
+      if(isDetected){
+        sCtx.fillStyle='rgba(255,92,122,0.4)';sCtx.font='bold 9px JetBrains Mono';sCtx.textAlign='center';
+        sCtx.fillText('DETECTED',0,-sh-12);sCtx.textAlign='left';
+      }
+    } else {
+      // Fish
+      sCtx.fillStyle=isDetected?'rgba(255,92,122,0.9)':'rgba(100,200,160,0.7)';
+      sCtx.beginPath();sCtx.ellipse(0,0,obj.size*1.5,obj.size*0.6,0,0,Math.PI*2);sCtx.fill();
+      sCtx.beginPath();sCtx.moveTo(-obj.size*1.5,0);sCtx.lineTo(-obj.size*2,-obj.size*0.5);sCtx.lineTo(-obj.size*2,obj.size*0.5);sCtx.closePath();
+      sCtx.fill();
+    }
+    sCtx.restore();
+  });
+
+  // SHIP
+  sCtx.save();sCtx.translate(shipX,waterTop);
+  // Hull
+  sCtx.beginPath();
+  sCtx.moveTo(-50,0);sCtx.lineTo(-45,20);sCtx.lineTo(45,20);sCtx.lineTo(50,0);
+  sCtx.lineTo(60,-5);sCtx.lineTo(60,-5);sCtx.lineTo(-60,-5);sCtx.closePath();
+  sCtx.fillStyle='#8a7a60';sCtx.fill();
+  sCtx.strokeStyle='#a09070';sCtx.lineWidth=2;sCtx.stroke();
+  // Superstructure
+  sCtx.fillStyle='#9a8a70';sCtx.fillRect(-25,-25,50,20);
+  sCtx.fillStyle='#b0a080';sCtx.fillRect(-12,-38,24,14);
+  // Radar/antenna
+  sCtx.strokeStyle='#c0b090';sCtx.lineWidth=1.5;
+  sCtx.beginPath();sCtx.moveTo(0,-38);sCtx.lineTo(0,-55);sCtx.stroke();
+  sCtx.beginPath();sCtx.arc(0,-55,4,0,Math.PI*2);sCtx.fillStyle='#00e5c3';sCtx.fill();
+  sCtx.restore();
+
+  // SONAR PULSES
+  sonarPulses=sonarPulses.filter(p=>{
+    if(p.expanding){
+      p.r+=p.speed;
+      const targetY=p.target==='floor'?floorY:waterTop+p.target.yRatio*(floorY-waterTop);
+      const d=Math.hypot(p.x-shipX,targetY-shipY-30);
+      if(p.r>=d){
+        // Generate echo
+        if(p.target==='floor'){
+          sonarDetected.push('floor');
+          updateSonarReadout(sonarDetected);
+        } else {
+          sonarDetected.push(p.target);
+          updateSonarReadout(sonarDetected);
+        }
+        sonarEchoes.push({x:p.target==='floor'?shipX:p.target.x, y:targetY, r:0, speed:3.5});
+        return false;
+      }
+      // Draw expanding ring (only downward arc)
+      sCtx.beginPath();
+      sCtx.arc(shipX,shipY+30,p.r,0,Math.PI);
+      sCtx.strokeStyle=`rgba(0,229,195,${Math.max(0,0.7-p.r/sH*0.6)})`;
+      sCtx.lineWidth=2;sCtx.stroke();
+      // Glow dot at front
+      const angle=Math.PI/2;
+      const frontY=shipY+30+Math.min(p.r,targetY-(shipY+30));
+      sCtx.beginPath();sCtx.arc(p.target==='floor'?shipX:lerp(shipX,p.target.x,p.r/d),frontY,4,0,Math.PI*2);
+      sCtx.fillStyle='rgba(0,229,195,0.9)';sCtx.fill();
+      return true;
+    }
+    return false;
+  });
+
+  // ECHOES
+  sonarEchoes=sonarEchoes.filter(e=>{
+    e.r+=e.speed;
+    const maxR=Math.hypot(e.x-shipX,e.y-(shipY+30));
+    if(e.r>=maxR+20)return false;
+    sCtx.beginPath();sCtx.arc(e.x,e.y,e.r*0.4,0,Math.PI*2);
+    sCtx.strokeStyle=`rgba(240,165,0,${Math.max(0,0.6-e.r/maxR*0.5)})`;sCtx.lineWidth=1.5;sCtx.stroke();
+    // Line back to ship
+    const prog=e.r/maxR;
+    const lx=lerp(e.x,shipX,prog);
+    const ly=lerp(e.y,shipY+30,prog);
+    sCtx.beginPath();sCtx.setLineDash([4,4]);
+    sCtx.moveTo(e.x,e.y);sCtx.lineTo(lx,ly);
+    sCtx.strokeStyle=`rgba(240,165,0,${0.4-prog*0.3})`;sCtx.lineWidth=1.5;sCtx.stroke();
+    sCtx.setLineDash([]);
+    return true;
+  });
+
+  // Depth indicator
+  sCtx.fillStyle='rgba(126,184,255,0.4)';sCtx.font='10px JetBrains Mono';
+  sCtx.fillText('v = '+sonarVel+' m/s',sW-120,floorY-8);
+
+  sonarAnimId=requestAnimationFrame(drawSonar);
+}
+
+function lerp(a,b,t){return a+(b-a)*Math.clamp(t,0,1);}
+Math.clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+
+// Click to add object
+sonarCanvas.addEventListener('click',e=>{
+  const r=sonarCanvas.getBoundingClientRect();
+  const mx=(e.clientX-r.left)*(sW/r.width);
+  const my=(e.clientY-r.top)*(sH/r.height);
+  const waterTop=sH*0.08;
+  const floorY=sH*0.82;
+  if(my>waterTop+20 && my<floorY-10){
+    const yRatio=(my-waterTop)/(floorY-waterTop);
+    sonarObjects.push({x:mx,yRatio,type:Math.random()<0.4?'sub':'fish',size:10+Math.random()*12});
+  }
+});
+
+/* ================================================================
+   RESIZE & INIT
+   ================================================================ */
+function onResize(){
+  initWave(); initPendulum(); initSpring(); initResonance(); initSonar();
+  updateSpringStats(); updatePendInfo(); updateResStats();
+}
+
+window.addEventListener('load',()=>{
+  onResize();
+  // Start all animation loops
+  waveLoop();
+  pendulumStep();
+  springLoop();
+  resLoop();
+  sonarAnimId=requestAnimationFrame(drawSonar);
+  // Add 2 default sonar objects
+  sonarObjects.push({x:sW*0.3,yRatio:0.45,type:'sub',size:18});
+  sonarObjects.push({x:sW*0.65,yRatio:0.65,type:'fish',size:12});
+});
+window.addEventListener('resize',()=>{clearTimeout(window._rt);window._rt=setTimeout(onResize,150);});
+</script>
+</body>
+</html>
