@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembelajaran Cahaya Interaktif</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* =============================================
+   LIGHT THEME — WARM SCHOLARLY AESTHETIC
+   ============================================= */
+:root {
+  --bg:        #f7f3ee;
+  --bg2:       #ede8e0;
+  --surface:   #ffffff;
+  --surface2:  #faf8f5;
+  --border:    #d8cfc4;
+  --border2:   #c5bab0;
+  --accent:    #e67e22;
+  --accent2:   #2980b9;
+  --accent3:   #27ae60;
+  --text:      #2c2416;
+  --text2:     #5a4e3e;
+  --text3:     #8a7a68;
+  --shadow:    0 4px 24px rgba(0,0,0,0.08);
+  --shadow2:   0 2px 8px rgba(0,0,0,0.06);
+  --ray:       #f9a825;
+  --ray2:      #fff176;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Lato', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ---- NAV TABS ---- */
+.nav-tabs {
+  display: flex;
+  background: var(--surface);
+  border-bottom: 2px solid var(--border);
+  box-shadow: var(--shadow2);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  overflow-x: auto;
+}
+.nav-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text3);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.nav-tab:hover { color: var(--accent); background: var(--bg2); }
+.nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ---- HERO ---- */
+.hero {
+  background: linear-gradient(135deg, #1a0a00 0%, #2c1810 40%, #1a2a40 100%);
+  color: white;
+  padding: 60px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -20%;
+  width: 140%; height: 200%;
+  background: radial-gradient(ellipse at 30% 50%, rgba(249,168,37,0.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 50%, rgba(41,128,185,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+/* Light ray lines */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(115deg, transparent 45%, rgba(255,230,100,0.05) 46%, rgba(255,230,100,0.05) 47%, transparent 48%),
+    linear-gradient(125deg, transparent 40%, rgba(255,200,80,0.04) 41%, rgba(255,200,80,0.04) 42.5%, transparent 43.5%),
+    linear-gradient(105deg, transparent 50%, rgba(255,240,120,0.04) 51%, rgba(255,240,120,0.04) 52%, transparent 53%);
+  pointer-events: none;
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  position: relative;
+  background: linear-gradient(90deg, #ffd54f, #ffffff, #81d4fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 3px;
+  margin-top: 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  position: relative;
+}
+.hero-spectrum {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  background: linear-gradient(90deg,
+    #7b1fa2, #3949ab, #039be5, #43a047, #f9a825, #e53935, #7b1fa2);
+}
+
+/* ---- LAYOUT ---- */
+.page-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+/* ---- SECTION ---- */
+.section {
+  margin-bottom: 56px;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--border);
+}
+.section-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.section-icon.orange { background: #fff3e0; }
+.section-icon.blue   { background: #e3f2fd; }
+.section-icon.green  { background: #e8f5e9; }
+.section-icon.purple { background: #f3e5f5; }
+.section-icon.teal   { background: #e0f2f1; }
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text3);
+  letter-spacing: 2px;
+}
+
+/* ---- PROSE ---- */
+.prose {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text2);
+  font-weight: 400;
+}
+.prose strong { color: var(--text); font-weight: 700; }
+.prose em { color: var(--accent); font-style: normal; font-weight: 700; }
+
+/* ---- DEFINITION BOX ---- */
+.def-box {
+  background: linear-gradient(135deg, #fff8e1, #fff3e0);
+  border: 1px solid #ffcc80;
+  border-left: 5px solid var(--accent);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+.def-box .def-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--accent);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+/* ---- CARDS GRID ---- */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.card-icon { font-size: 2rem; margin-bottom: 10px; }
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.card-desc { font-size: 0.85rem; color: var(--text2); line-height: 1.6; }
+
+/* ---- FORMULA BOX ---- */
+.formula-row {
+  display: flex;
+  gap: 16px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+.formula-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 24px;
+  text-align: center;
+  box-shadow: var(--shadow2);
+  min-width: 180px;
+}
+.formula-box .f-label {
+  font-size: 0.7rem;
+  font-family: 'DM Mono', monospace;
+  color: var(--text3);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.formula-box .f-eq {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent2);
+}
+.formula-box .f-note {
+  font-size: 0.72rem;
+  color: var(--text3);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* ---- INTERACTIVE CANVAS SECTION ---- */
+.interactive-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-top: 20px;
+}
+.interactive-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.toolbar-label {
+  font-size: 0.75rem;
+  font-family: 'DM Mono', monospace;
+  color: var(--text3);
+  letter-spacing: 1px;
+}
+.toolbar-btn {
+  padding: 6px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.toolbar-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+.toolbar-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+.toolbar-sep { width: 1px; height: 24px; background: var(--border); }
+
+canvas.sim-canvas {
+  display: block;
+  width: 100%;
+  cursor: crosshair;
+}
+.canvas-hint {
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 0.72rem;
+  font-family: 'DM Mono', monospace;
+  color: var(--text3);
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  letter-spacing: 0.5px;
+}
+
+/* ---- INFO TAG ---- */
+.info-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  color: var(--text2);
+  margin: 4px 4px 0 0;
+}
+.info-tag .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+/* ---- TWO COL ---- */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+@media (max-width: 680px) { .two-col { grid-template-columns: 1fr; } }
+
+.sub-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+.sub-card h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---- TABLE ---- */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin-top: 16px;
+}
+.data-table th {
+  background: var(--bg2);
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.72rem;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 1px;
+  color: var(--text3);
+  border-bottom: 2px solid var(--border);
+}
+.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+.data-table tr:hover td { background: var(--bg2); }
+
+/* ---- SNELL LAW DISPLAY ---- */
+.snell-display {
+  background: linear-gradient(135deg, #e3f2fd, #e8eaf6);
+  border: 1px solid #90caf9;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.snell-val {
+  text-align: center;
+}
+.snell-val .sv-label {
+  font-size: 0.65rem;
+  font-family: 'DM Mono', monospace;
+  color: #5c6bc0;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+.snell-val .sv-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent2);
+}
+.snell-eq {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--text);
+  font-style: italic;
+}
+
+/* ---- MIRROR SELECTOR ---- */
+.mirror-selector {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.mirror-btn {
+  flex: 1; min-width: 120px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text2);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+.mirror-btn:hover { border-color: var(--accent); color: var(--accent); }
+.mirror-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+/* ---- LEGEND ---- */
+.sim-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+}
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-family: 'DM Mono', monospace;
+  color: var(--text3);
+}
+.leg-line {
+  width: 24px; height: 3px;
+  border-radius: 2px;
+}
+
+/* ---- ANGLE DISPLAY ---- */
+.angle-display {
+  display: flex;
+  gap: 20px;
+  padding: 10px 16px;
+  background: #fffde7;
+  border-top: 1px solid #ffe082;
+  flex-wrap: wrap;
+}
+.angle-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+.angle-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text3);
+}
+.angle-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ---- SPECTRUM ---- */
+.spectrum-bar {
+  height: 40px;
+  border-radius: 8px;
+  background: linear-gradient(90deg,
+    #7b1fa2 0%, #3949ab 14%, #039be5 28%, #43a047 43%,
+    #f9a825 57%, #ef6c00 71%, #e53935 85%, #880e4f 100%);
+  margin: 16px 0;
+  position: relative;
+  overflow: visible;
+}
+.spectrum-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  font-family: 'DM Mono', monospace;
+  color: var(--text3);
+  margin-top: 6px;
+  padding: 0 4px;
+}
+
+/* ---- REFRACTION INDEX TABLE ---- */
+.medium-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.medium-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.medium-card:hover, .medium-card.active {
+  border-color: var(--accent2);
+  background: #e3f2fd;
+}
+.medium-card .mc-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.medium-card .mc-n {
+  font-family: 'DM Mono', monospace;
+  font-size: 1rem;
+  color: var(--accent2);
+  font-weight: 700;
+}
+
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+footer {
+  text-align: center;
+  padding: 24px 20px;
+  color: var(--text3);
+  font-size: 0.72rem;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 2px;
+  border-top: 1px solid var(--border);
+}
+
+/* Range slider */
+input[type=range] {
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border2);
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+.slider-row label {
+  font-size: 0.78rem;
+  font-family: 'DM Mono', monospace;
+  color: var(--text3);
+  min-width: 120px;
+}
+.slider-row span {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--accent);
+  min-width: 40px;
+  text-align: right;
+}
+
+select.toolbar-select {
+  padding: 5px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: 'Lato', sans-serif;
+  color: var(--text2);
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAV TABS
+     ============================================================ -->
+<nav class="nav-tabs">
+  <a href="index.html" class="nav-tab">⚛ Tabel Periodik</a>
+  <a href="cahaya.html" class="nav-tab active">☀ Cahaya</a>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<div class="hero">
+  <div class="hero-title">Cahaya</div>
+  <div class="hero-sub">OPTIKA FISIKA • INTERAKTIF • PEMBELAJARAN MENDALAM</div>
+  <div class="hero-spectrum"></div>
+</div>
+
+<!-- ============================================================
+     PAGE CONTENT
+     ============================================================ -->
+<div class="page-content">
+
+  <!-- ============================
+       1. PENGERTIAN CAHAYA
+       ============================ -->
+  <section class="section" id="sec-pengertian">
+    <div class="section-header">
+      <div class="section-icon orange">💡</div>
+      <div>
+        <div class="section-num">BAGIAN 01</div>
+        <div class="section-title">Pengertian Cahaya</div>
+      </div>
+    </div>
+
+    <div class="def-box">
+      <div class="def-label">Definisi</div>
+      <strong>Cahaya</strong> adalah gelombang elektromagnetik yang dapat terlihat oleh mata manusia, merambat pada rentang panjang gelombang antara <em>380 nm hingga 750 nm</em>. Cahaya merupakan salah satu bentuk energi yang dapat merambat tanpa memerlukan medium perantara.
+    </div>
+
+    <p class="prose" style="margin-top:16px;">
+      Menurut teori <strong>dualisme gelombang-partikel</strong> oleh Albert Einstein dan Max Planck, cahaya memiliki dua sifat sekaligus: bersifat sebagai <strong>gelombang elektromagnetik</strong> (dibuktikan oleh interferensi dan difraksi) dan sebagai <strong>partikel foton</strong> (dibuktikan oleh efek fotolistrik). Cahaya merambat dengan kecepatan <em>c = 3 × 10⁸ m/s</em> di ruang hampa, yang merupakan kecepatan tertinggi di alam semesta.
+    </p>
+
+    <div class="formula-row">
+      <div class="formula-box">
+        <div class="f-label">KECEPATAN CAHAYA</div>
+        <div class="f-eq">c = 3×10⁸ m/s</div>
+        <div class="f-note">Di ruang hampa (vakum)</div>
+      </div>
+      <div class="formula-box">
+        <div class="f-label">HUBUNGAN DASAR</div>
+        <div class="f-eq">c = λ · f</div>
+        <div class="f-note">λ = panjang gelombang, f = frekuensi</div>
+      </div>
+      <div class="formula-box">
+        <div class="f-label">ENERGI FOTON</div>
+        <div class="f-eq">E = h · f</div>
+        <div class="f-note">h = 6,626×10⁻³⁴ J·s (konstanta Planck)</div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;">
+      <div class="section-header" style="border-bottom:1px solid var(--border); margin-bottom:16px; padding-bottom:10px;">
+        <strong style="font-family:'Playfair Display',serif; font-size:1.1rem;">Spektrum Cahaya Tampak</strong>
+      </div>
+      <div class="spectrum-bar"></div>
+      <div class="spectrum-labels">
+        <span>Ungu<br/>380–420 nm</span>
+        <span>Nila<br/>420–450 nm</span>
+        <span>Biru<br/>450–495 nm</span>
+        <span>Hijau<br/>495–570 nm</span>
+        <span>Kuning<br/>570–590 nm</span>
+        <span>Jingga<br/>590–620 nm</span>
+        <span>Merah<br/>620–750 nm</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       2. SIFAT-SIFAT CAHAYA
+       ============================ -->
+  <section class="section" id="sec-sifat">
+    <div class="section-header">
+      <div class="section-icon blue">✨</div>
+      <div>
+        <div class="section-num">BAGIAN 02</div>
+        <div class="section-title">Sifat-Sifat Cahaya</div>
+      </div>
+    </div>
+
+    <p class="prose">Cahaya memiliki beberapa sifat fundamental yang membedakannya dari gelombang mekanik lainnya dan menjadi dasar dari berbagai fenomena optika:</p>
+
+    <div class="cards-grid" style="margin-top:20px;">
+      <div class="card">
+        <div class="card-icon">📡</div>
+        <div class="card-title">Merambat Lurus</div>
+        <div class="card-desc">Cahaya merambat dalam garis lurus pada medium yang seragam. Ini menjadi dasar terbentuknya bayangan dan gerhana matahari/bulan.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🪞</div>
+        <div class="card-title">Pemantulan (Refleksi)</div>
+        <div class="card-desc">Cahaya memantul ketika mengenai permukaan. Sudut datang selalu sama dengan sudut pantul terhadap garis normal.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔮</div>
+        <div class="card-title">Pembiasan (Refraksi)</div>
+        <div class="card-desc">Cahaya berbelok arah saat melewati batas dua medium berbeda. Kecepatan cahaya berubah sehingga arahnya turut berubah.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌈</div>
+        <div class="card-title">Dispersi</div>
+        <div class="card-desc">Cahaya putih terurai menjadi spektrum warna-warni saat melewati prisma karena tiap warna memiliki panjang gelombang berbeda.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">〰️</div>
+        <div class="card-title">Difraksi</div>
+        <div class="card-desc">Cahaya dapat melentur di sekitar tepi benda atau melalui celah sempit, menghasilkan pola gelap-terang yang khas.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔗</div>
+        <div class="card-title">Interferensi</div>
+        <div class="card-desc">Dua berkas cahaya koheren dapat saling memperkuat (konstruktif) atau melemahkan (destruktif) satu sama lain.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🕶️</div>
+        <div class="card-title">Polarisasi</div>
+        <div class="card-desc">Cahaya dapat dipolarisasi sehingga hanya bergetar dalam satu bidang. Dimanfaatkan dalam kacamata polaroid dan layar LCD.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Merambat di Vakum</div>
+        <div class="card-desc">Berbeda dengan gelombang mekanik, cahaya tidak butuh medium. Di luar angkasa yang hampa pun cahaya dapat merambat bebas.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       3. PEMANTULAN CAHAYA INTERAKTIF
+       ============================ -->
+  <section class="section" id="sec-pemantulan">
+    <div class="section-header">
+      <div class="section-icon orange">🪞</div>
+      <div>
+        <div class="section-num">BAGIAN 03</div>
+        <div class="section-title">Pemantulan Cahaya Interaktif</div>
+      </div>
+    </div>
+
+    <p class="prose">Hukum pemantulan cahaya (Hukum Snell untuk refleksi): <strong>sudut datang (θᵢ) = sudut pantul (θᵣ)</strong>, keduanya diukur dari garis normal bidang pantul. Terdapat dua jenis pemantulan berdasarkan keadaan permukaan:</p>
+
+    <div class="two-col" style="margin-top:16px;">
+      <div class="sub-card">
+        <h4>🪞 Pemantulan Teratur (Specular)</h4>
+        <p class="card-desc">Terjadi pada permukaan rata/licin (cermin, air tenang). Semua sinar sejajar dipantulkan dengan arah yang sama, menghasilkan bayangan yang jelas dan tajam.</p>
+      </div>
+      <div class="sub-card">
+        <h4>🌫 Pemantulan Baur (Diffuse)</h4>
+        <p class="card-desc">Terjadi pada permukaan kasar (kertas, tembok, aspal). Sinar-sinar yang sejajar dipantulkan ke berbagai arah acak, tidak menghasilkan bayangan yang jelas.</p>
+      </div>
+    </div>
+
+    <div class="interactive-wrap" style="margin-top:20px;">
+      <div class="interactive-toolbar">
+        <span class="toolbar-label">JENIS PERMUKAAN:</span>
+        <button class="toolbar-btn active" id="btnSpecular" onclick="setReflectionMode('specular')">🪞 Teratur (Specular)</button>
+        <button class="toolbar-btn" id="btnDiffuse" onclick="setReflectionMode('diffuse')">🌫 Baur (Diffuse)</button>
+        <div class="toolbar-sep"></div>
+        <span class="toolbar-label">SINAR:</span>
+        <button class="toolbar-btn active" id="btnSingle" onclick="setRayMode('single')">Tunggal</button>
+        <button class="toolbar-btn" id="btnMultiple" onclick="setRayMode('multiple')">Sejajar (5)</button>
+        <div class="toolbar-sep"></div>
+        <span class="toolbar-label">NORMAL:</span>
+        <button class="toolbar-btn" id="btnNormal" onclick="toggleNormal()">Tampilkan</button>
+      </div>
+      <canvas id="reflectionCanvas" class="sim-canvas" height="360"></canvas>
+      <div class="angle-display">
+        <div class="angle-item">
+          <span class="angle-label">SUDUT DATANG (θᵢ):</span>
+          <span class="angle-value" id="angleIn">—°</span>
+        </div>
+        <div class="angle-item">
+          <span class="angle-label">SUDUT PANTUL (θᵣ):</span>
+          <span class="angle-value" id="angleOut">—°</span>
+        </div>
+        <div class="angle-item" id="lawCheck" style="display:none">
+          <span class="angle-label">HUKUM PEMANTULAN:</span>
+          <span class="angle-value" style="color:#27ae60" id="lawResult">✓ Terpenuhi</span>
+        </div>
+      </div>
+      <div class="sim-legend">
+        <div class="leg-item"><div class="leg-line" style="background:#f9a825"></div> Sinar Datang</div>
+        <div class="leg-item"><div class="leg-line" style="background:#ef5350"></div> Sinar Pantul</div>
+        <div class="leg-item"><div class="leg-line" style="background:rgba(0,0,0,0.25); border-top: 2px dashed #999"></div> Garis Normal</div>
+      </div>
+      <div class="canvas-hint">💡 Klik & Seret ujung sinar kuning untuk mengubah sudut datang</div>
+    </div>
+  </section>
+
+  <!-- ============================
+       4. PEMBIASAN CAHAYA INTERAKTIF
+       ============================ -->
+  <section class="section" id="sec-pembiasan">
+    <div class="section-header">
+      <div class="section-icon blue">🔮</div>
+      <div>
+        <div class="section-num">BAGIAN 04</div>
+        <div class="section-title">Pembiasan Cahaya Interaktif</div>
+      </div>
+    </div>
+
+    <p class="prose">Pembiasan (refraksi) terjadi karena cahaya mengalami perubahan kecepatan saat berpindah dari satu medium ke medium lain yang berbeda kerapatannya. Hukum Snell-Descartes menyatakan:</p>
+
+    <div class="def-box" style="background: linear-gradient(135deg, #e3f2fd, #e8eaf6); border-color: #90caf9; border-left-color: var(--accent2);">
+      <div class="def-label" style="color:var(--accent2)">Hukum Snell</div>
+      <strong>n₁ · sin(θ₁) = n₂ · sin(θ₂)</strong><br>
+      <span style="font-size:0.9rem; color:var(--text2)">di mana n adalah indeks bias medium, θ adalah sudut terhadap garis normal.</span>
+    </div>
+
+    <div class="medium-grid" id="mediumGrid">
+      <div class="medium-card active" onclick="selectMedium(this,'vakum',1.0)"><div class="mc-name">Vakum/Udara</div><div class="mc-n">n = 1.00</div></div>
+      <div class="medium-card" onclick="selectMedium(this,'air',1.33)"><div class="mc-name">Air</div><div class="mc-n">n = 1.33</div></div>
+      <div class="medium-card" onclick="selectMedium(this,'kaca',1.5)"><div class="mc-name">Kaca</div><div class="mc-n">n = 1.50</div></div>
+      <div class="medium-card" onclick="selectMedium(this,'berlian',2.42)"><div class="mc-name">Berlian</div><div class="mc-n">n = 2.42</div></div>
+      <div class="medium-card" onclick="selectMedium(this,'minyak',1.46)"><div class="mc-name">Minyak</div><div class="mc-n">n = 1.46</div></div>
+      <div class="medium-card" onclick="selectMedium(this,'es',1.31)"><div class="mc-name">Es</div><div class="mc-n">n = 1.31</div></div>
+    </div>
+
+    <div class="interactive-wrap" style="margin-top:16px;">
+      <div class="interactive-toolbar">
+        <span class="toolbar-label">MEDIUM ATAS: <strong id="med1Label">Udara (n=1.00)</strong></span>
+        <div class="toolbar-sep"></div>
+        <span class="toolbar-label">MEDIUM BAWAH: <strong id="med2Label">Air (n=1.33)</strong></span>
+        <div class="toolbar-sep"></div>
+        <button class="toolbar-btn" onclick="swapMedia()">⇅ Tukar</button>
+        <button class="toolbar-btn" id="btnTIR" onclick="toggleTIR()">Sudut Kritis</button>
+      </div>
+      <canvas id="refractionCanvas" class="sim-canvas" height="380"></canvas>
+      <div class="snell-display">
+        <div class="snell-val"><div class="sv-label">θ₁ (DATANG)</div><div class="sv-num" id="snellT1">—°</div></div>
+        <div class="snell-eq">n₁·sin θ₁ = n₂·sin θ₂</div>
+        <div class="snell-val"><div class="sv-label">θ₂ (BIAS)</div><div class="sv-num" id="snellT2">—°</div></div>
+        <div class="snell-val"><div class="sv-label">n₁</div><div class="sv-num" id="snellN1">1.00</div></div>
+        <div class="snell-val"><div class="sv-label">n₂</div><div class="sv-num" id="snellN2">1.33</div></div>
+        <div class="snell-val"><div class="sv-label">STATUS</div><div class="sv-num" style="font-size:0.9rem" id="snellStatus">Normal</div></div>
+      </div>
+      <div class="sim-legend">
+        <div class="leg-item"><div class="leg-line" style="background:#f9a825"></div> Sinar Datang</div>
+        <div class="leg-item"><div class="leg-line" style="background:#42a5f5"></div> Sinar Bias</div>
+        <div class="leg-item"><div class="leg-line" style="background:#ef5350"></div> Sinar Pantul (TIR)</div>
+        <div class="leg-item"><div class="leg-line" style="background:#9e9e9e; border-top:2px dashed #9e9e9e"></div> Garis Normal</div>
+      </div>
+      <div class="canvas-hint">💡 Seret ujung sinar kuning untuk mengubah sudut datang • Pilih medium di atas</div>
+    </div>
+
+    <table class="data-table" style="margin-top:24px;">
+      <thead>
+        <tr>
+          <th>Medium</th><th>Indeks Bias (n)</th><th>Kecepatan Cahaya</th><th>Keterangan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Vakum / Udara</td><td>1,000</td><td>3,00 × 10⁸ m/s</td><td>Referensi standar</td></tr>
+        <tr><td>Es</td><td>1,31</td><td>2,29 × 10⁸ m/s</td><td>Sedikit lebih rapat dari air</td></tr>
+        <tr><td>Air</td><td>1,33</td><td>2,26 × 10⁸ m/s</td><td>Sedang (umum)</td></tr>
+        <tr><td>Minyak Zaitun</td><td>1,46</td><td>2,05 × 10⁸ m/s</td><td>Lebih rapat dari air</td></tr>
+        <tr><td>Kaca Biasa</td><td>1,50</td><td>2,00 × 10⁸ m/s</td><td>Bervariasi 1.45–1.9</td></tr>
+        <tr><td>Berlian</td><td>2,42</td><td>1,24 × 10⁸ m/s</td><td>Indeks tertinggi alami</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================
+       5. CERMIN INTERAKTIF
+       ============================ -->
+  <section class="section" id="sec-cermin">
+    <div class="section-header">
+      <div class="section-icon purple">🔭</div>
+      <div>
+        <div class="section-num">BAGIAN 05</div>
+        <div class="section-title">Sinar Istimewa & Pembentukan Bayangan</div>
+      </div>
+    </div>
+
+    <p class="prose">Cermin lengkung (cekung dan cembung) memiliki <strong>sinar-sinar istimewa</strong> yang digunakan untuk melukiskan pembentukan bayangan secara geometrik. Geser posisi benda untuk melihat perubahan bayangan secara real-time.</p>
+
+    <div class="two-col" style="margin-top:16px;">
+      <div class="sub-card">
+        <h4 style="color:#8e24aa">🟣 Cermin Cekung (Konkaf)</h4>
+        <p class="card-desc" style="margin-bottom:10px">Permukaan reflektif melengkung ke <strong>dalam</strong>. Bersifat <strong>konvergen</strong> (mengumpulkan sinar). Digunakan pada reflektor lampu, teleskop, dan cermin rias.</p>
+        <div style="font-size:0.78rem; color:var(--text3); font-family:'DM Mono',monospace; line-height:1.8;">
+          3 Sinar Istimewa:<br>
+          1. Sinar // sumbu utama → dipantulkan melalui F<br>
+          2. Sinar melalui F → dipantulkan // sumbu utama<br>
+          3. Sinar melalui M (pusat) → dipantulkan balik
+        </div>
+      </div>
+      <div class="sub-card">
+        <h4 style="color:#e67e22">🟠 Cermin Cembung (Konveks)</h4>
+        <p class="card-desc" style="margin-bottom:10px">Permukaan reflektif melengkung ke <strong>luar</strong>. Bersifat <strong>divergen</strong> (menyebarkan sinar). Digunakan pada kaca spion kendaraan dan cermin pengawas.</p>
+        <div style="font-size:0.78rem; color:var(--text3); font-family:'DM Mono',monospace; line-height:1.8;">
+          3 Sinar Istimewa:<br>
+          1. Sinar // sumbu utama → seolah dari F virtual<br>
+          2. Sinar menuju F virtual → dipantulkan // sumbu<br>
+          3. Sinar menuju M virtual → dipantulkan balik
+        </div>
+      </div>
+    </div>
+
+    <div class="mirror-selector" style="margin-top:16px;">
+      <button class="mirror-btn active" id="mbCekung" onclick="setMirror('cekung')">🟣 Cermin Cekung</button>
+      <button class="mirror-btn" id="mbCembung" onclick="setMirror('cembung')">🟠 Cermin Cembung</button>
+      <button class="mirror-btn" id="mbDatar" onclick="setMirror('datar')">⬜ Cermin Datar</button>
+    </div>
+
+    <div class="interactive-wrap" style="margin-top:12px;">
+      <div class="interactive-toolbar">
+        <span class="toolbar-label">TAMPILKAN:</span>
+        <button class="toolbar-btn active" id="btnS1" onclick="toggleSinar(1)">Sinar 1</button>
+        <button class="toolbar-btn active" id="btnS2" onclick="toggleSinar(2)">Sinar 2</button>
+        <button class="toolbar-btn active" id="btnS3" onclick="toggleSinar(3)">Sinar 3</button>
+        <div class="toolbar-sep"></div>
+        <label class="toolbar-label">f = <span id="focalLabel">120</span>px</label>
+        <input type="range" id="focalSlider" min="60" max="220" value="120" oninput="setFocal(this.value)" style="width:100px">
+      </div>
+      <canvas id="mirrorCanvas" class="sim-canvas" height="420"></canvas>
+      <div class="angle-display">
+        <div class="angle-item"><span class="angle-label">JARAK BENDA (s):</span><span class="angle-value" id="mObjDist">—</span></div>
+        <div class="angle-item"><span class="angle-label">JARAK BAYANGAN (s'):</span><span class="angle-value" id="mImgDist">—</span></div>
+        <div class="angle-item"><span class="angle-label">PERBESARAN (M):</span><span class="angle-value" id="mMag">—</span></div>
+        <div class="angle-item"><span class="angle-label">SIFAT BAYANGAN:</span><span class="angle-value" style="font-size:0.85rem" id="mNature">—</span></div>
+      </div>
+      <div class="sim-legend">
+        <div class="leg-item"><div class="leg-line" style="background:#f9a825"></div> Sinar Istimewa 1</div>
+        <div class="leg-item"><div class="leg-line" style="background:#42a5f5"></div> Sinar Istimewa 2</div>
+        <div class="leg-item"><div class="leg-line" style="background:#66bb6a"></div> Sinar Istimewa 3</div>
+        <div class="leg-item"><div class="leg-line" style="background:#ef5350"></div> Bayangan (Maya)</div>
+        <div class="leg-item"><div class="leg-line" style="background:#880e4f; border-top:2px dashed #880e4f"></div> Perpanjangan (Maya)</div>
+      </div>
+      <div class="canvas-hint">💡 Seret benda (panah merah) ke kiri-kanan • Slider untuk mengubah jarak fokus</div>
+    </div>
+
+    <div class="formula-row" style="margin-top:24px;">
+      <div class="formula-box">
+        <div class="f-label">PERSAMAAN CERMIN</div>
+        <div class="f-eq">1/f = 1/s + 1/s'</div>
+        <div class="f-note">f=fokus, s=jarak benda, s'=jarak bayangan</div>
+      </div>
+      <div class="formula-box">
+        <div class="f-label">PERBESARAN</div>
+        <div class="f-eq">M = −s'/s</div>
+        <div class="f-note">M&gt;0 = tegak, M&lt;0 = terbalik</div>
+      </div>
+      <div class="formula-box">
+        <div class="f-label">JARAK FOKUS</div>
+        <div class="f-eq">f = R/2</div>
+        <div class="f-note">R = jari-jari kelengkungan cermin</div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-content -->
+
+<footer>PEMBELAJARAN CAHAYA INTERAKTIF • FISIKA SMP/SMA • OPTIKA GEOMETRI</footer>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script>
+// ================================================================
+// STATE
+// ================================================================
+let reflectionMode = 'specular';
+let rayMode = 'single';
+let showNormal = false;
+let mirrorType = 'cekung';
+let showSinar = [true, true, true];
+let focalLen = 120;
+let n1 = 1.0, n2 = 1.33;
+let medLabel1 = 'Udara (n=1.00)', medLabel2 = 'Air (n=1.33)';
+let showTIR = false;
+
+// ================================================================
+// REFLECTION CANVAS
+// ================================================================
+const refCanvas = document.getElementById('reflectionCanvas');
+const refCtx = refCanvas.getContext('2d');
+
+let refW, refH;
+let rayEndX, rayEndY;
+let isDraggingRay = false;
+
+function initReflection() {
+  refW = refCanvas.offsetWidth;
+  refH = 360;
+  refCanvas.width = refW;
+  refCanvas.height = refH;
+  rayEndX = refW * 0.35;
+  rayEndY = refH * 0.18;
+  drawReflection();
+}
+
+function drawReflection() {
+  refCtx.clearRect(0, 0, refW, refH);
+
+  const surfY = refH * 0.6;
+  const hitX = refW * 0.5;
+
+  // Background gradients
+  const bgGrad = refCtx.createLinearGradient(0, 0, 0, refH);
+  bgGrad.addColorStop(0, '#1a1a2e');
+  bgGrad.addColorStop(1, '#2d2d44');
+  refCtx.fillStyle = bgGrad;
+  refCtx.fillRect(0, 0, refW, refH);
+
+  // Surface
+  if (reflectionMode === 'specular') {
+    // Shiny mirror surface
+    const surfGrad = refCtx.createLinearGradient(0, surfY - 4, 0, surfY + 12);
+    surfGrad.addColorStop(0, '#90caf9');
+    surfGrad.addColorStop(0.4, '#e3f2fd');
+    surfGrad.addColorStop(1, '#1565c0');
+    refCtx.fillStyle = surfGrad;
+    refCtx.fillRect(0, surfY - 4, refW, 16);
+    refCtx.fillStyle = 'rgba(255,255,255,0.08)';
+    refCtx.fillRect(0, surfY + 12, refW, refH - surfY - 12);
+  } else {
+    // Rough diffuse surface
+    refCtx.fillStyle = '#5d4037';
+    refCtx.fillRect(0, surfY - 4, refW, 20);
+    // Rough texture bumps
+    refCtx.strokeStyle = '#795548';
+    refCtx.lineWidth = 1;
+    for (let x = 0; x < refW; x += 14) {
+      const h = 3 + Math.sin(x * 0.3) * 2 + Math.random() * 2;
+      refCtx.beginPath();
+      refCtx.moveTo(x, surfY - 4);
+      refCtx.lineTo(x + 7, surfY - 4 - h);
+      refCtx.lineTo(x + 14, surfY - 4);
+      refCtx.stroke();
+    }
+    refCtx.fillStyle = 'rgba(93,64,55,0.3)';
+    refCtx.fillRect(0, surfY + 16, refW, refH - surfY - 16);
+  }
+
+  // Normal line
+  if (showNormal) {
+    refCtx.setLineDash([6, 6]);
+    refCtx.strokeStyle = 'rgba(255,255,255,0.35)';
+    refCtx.lineWidth = 1.5;
+    refCtx.beginPath();
+    refCtx.moveTo(hitX, surfY - refH * 0.45);
+    refCtx.lineTo(hitX, surfY + refH * 0.35);
+    refCtx.stroke();
+    refCtx.setLineDash([]);
+  }
+
+  if (rayMode === 'single') {
+    drawSingleRay(refCtx, hitX, surfY);
+  } else {
+    drawMultipleRays(refCtx, hitX, surfY);
+  }
+
+  // Drag handle
+  refCtx.beginPath();
+  refCtx.arc(rayEndX, rayEndY, 10, 0, Math.PI * 2);
+  refCtx.fillStyle = 'rgba(249,168,37,0.3)';
+  refCtx.fill();
+  refCtx.strokeStyle = '#f9a825';
+  refCtx.lineWidth = 2;
+  refCtx.stroke();
+
+  // Arrow indicator on handle
+  refCtx.fillStyle = '#f9a825';
+  refCtx.font = 'bold 10px Lato';
+  refCtx.textAlign = 'center';
+  refCtx.fillText('☞', rayEndX, rayEndY + 4);
+}
+
+function drawSingleRay(ctx, hitX, surfY) {
+  const dx = hitX - rayEndX;
+  const dy = surfY - rayEndY;
+  const angle = Math.atan2(dx, dy); // angle from normal
+  const angleDeg = Math.abs(Math.round(angle * 180 / Math.PI));
+
+  // Incident ray with glow
+  ctx.shadowColor = '#f9a825';
+  ctx.shadowBlur = 12;
+  drawArrowLine(ctx, rayEndX, rayEndY, hitX, surfY, '#f9a825', 2.5, true);
+  ctx.shadowBlur = 0;
+
+  if (reflectionMode === 'specular') {
+    // Reflected ray (angle of reflection = angle of incidence)
+    const reflX = hitX + dx;
+    const reflY = surfY - dy;
+    ctx.shadowColor = '#ef5350';
+    ctx.shadowBlur = 10;
+    drawArrowLine(ctx, hitX, surfY, reflX, reflY, '#ef5350', 2.5, true);
+    ctx.shadowBlur = 0;
+
+    document.getElementById('angleIn').textContent = angleDeg + '°';
+    document.getElementById('angleOut').textContent = angleDeg + '°';
+    document.getElementById('lawCheck').style.display = 'flex';
+    document.getElementById('lawResult').textContent = '✓ θᵢ = θᵣ';
+  } else {
+    // Diffuse: multiple scattered rays
+    const numScatter = 8;
+    for (let i = 0; i < numScatter; i++) {
+      const scatterAngle = -Math.PI * 0.9 + (i / (numScatter - 1)) * Math.PI * 0.9;
+      const len = 80 + Math.sin(i) * 30;
+      const sx = hitX + Math.sin(scatterAngle) * len;
+      const sy = surfY - Math.cos(scatterAngle) * len;
+      const alpha = 0.3 + 0.3 * Math.abs(Math.cos(scatterAngle - angle));
+      ctx.globalAlpha = alpha;
+      drawArrowLine(ctx, hitX, surfY, sx, sy, '#ef5350', 1.5, false);
+    }
+    ctx.globalAlpha = 1;
+
+    document.getElementById('angleIn').textContent = angleDeg + '°';
+    document.getElementById('angleOut').textContent = 'Baur';
+    document.getElementById('lawCheck').style.display = 'flex';
+    document.getElementById('lawResult').textContent = '〜 Pantulan Baur';
+    document.getElementById('lawResult').style.color = '#ff9800';
+  }
+}
+
+function drawMultipleRays(ctx, hitX, surfY) {
+  const dx = hitX - rayEndX;
+  const dy = surfY - rayEndY;
+  const offsets = [-50, -25, 0, 25, 50];
+  offsets.forEach((off, i) => {
+    const rx = rayEndX + off;
+    const hx = hitX + off;
+    const alpha = 0.5 + 0.5 * (i === 2 ? 1 : 0.5);
+    ctx.globalAlpha = alpha;
+
+    ctx.shadowColor = '#f9a825';
+    ctx.shadowBlur = 8;
+    drawArrowLine(ctx, rx, rayEndY, hx, surfY, '#f9a825', 2, true);
+    ctx.shadowBlur = 0;
+
+    if (reflectionMode === 'specular') {
+      const reflX = hx + dx;
+      const reflY = surfY - dy;
+      ctx.shadowColor = '#ef5350';
+      ctx.shadowBlur = 6;
+      drawArrowLine(ctx, hx, surfY, reflX, reflY, '#ef5350', 2, true);
+      ctx.shadowBlur = 0;
+    } else {
+      for (let j = 0; j < 5; j++) {
+        const sa = -Math.PI * 0.8 + (j / 4) * Math.PI * 0.8;
+        ctx.globalAlpha = alpha * 0.4;
+        drawArrowLine(ctx, hx, surfY, hx + Math.sin(sa) * 70, surfY - Math.cos(sa) * 70, '#ef5350', 1.2, false);
+      }
+    }
+    ctx.globalAlpha = 1;
+  });
+}
+
+function drawArrowLine(ctx, x1, y1, x2, y2, color, width, arrow) {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.stroke();
+
+  if (arrow) {
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const aLen = 12;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - aLen * Math.cos(angle - 0.4), y2 - aLen * Math.sin(angle - 0.4));
+    ctx.lineTo(x2 - aLen * Math.cos(angle + 0.4), y2 - aLen * Math.sin(angle + 0.4));
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+}
+
+// Drag interaction
+refCanvas.addEventListener('mousedown', e => {
+  const r = refCanvas.getBoundingClientRect();
+  const mx = (e.clientX - r.left) * (refW / r.width);
+  const my = (e.clientY - r.top) * (refH / r.height);
+  if (Math.hypot(mx - rayEndX, my - rayEndY) < 20) isDraggingRay = true;
+});
+refCanvas.addEventListener('mousemove', e => {
+  if (!isDraggingRay) return;
+  const r = refCanvas.getBoundingClientRect();
+  rayEndX = Math.max(10, Math.min(refW - 10, (e.clientX - r.left) * (refW / r.width)));
+  rayEndY = Math.max(10, Math.min(refH * 0.5, (e.clientY - r.top) * (refH / r.height)));
+  drawReflection();
+});
+refCanvas.addEventListener('mouseup', () => { isDraggingRay = false; });
+refCanvas.addEventListener('touchstart', e => {
+  const r = refCanvas.getBoundingClientRect();
+  const mx = (e.touches[0].clientX - r.left) * (refW / r.width);
+  const my = (e.touches[0].clientY - r.top) * (refH / r.height);
+  if (Math.hypot(mx - rayEndX, my - rayEndY) < 28) isDraggingRay = true;
+  e.preventDefault();
+}, {passive:false});
+refCanvas.addEventListener('touchmove', e => {
+  if (!isDraggingRay) return;
+  const r = refCanvas.getBoundingClientRect();
+  rayEndX = Math.max(10, Math.min(refW - 10, (e.touches[0].clientX - r.left) * (refW / r.width)));
+  rayEndY = Math.max(10, Math.min(refH * 0.5, (e.touches[0].clientY - r.top) * (refH / r.height)));
+  drawReflection();
+  e.preventDefault();
+}, {passive:false});
+refCanvas.addEventListener('touchend', () => { isDraggingRay = false; });
+
+function setReflectionMode(m) {
+  reflectionMode = m;
+  document.getElementById('btnSpecular').classList.toggle('active', m === 'specular');
+  document.getElementById('btnDiffuse').classList.toggle('active', m === 'diffuse');
+  drawReflection();
+}
+function setRayMode(m) {
+  rayMode = m;
+  document.getElementById('btnSingle').classList.toggle('active', m === 'single');
+  document.getElementById('btnMultiple').classList.toggle('active', m === 'multiple');
+  drawReflection();
+}
+function toggleNormal() {
+  showNormal = !showNormal;
+  document.getElementById('btnNormal').classList.toggle('active', showNormal);
+  document.getElementById('btnNormal').textContent = showNormal ? 'Sembunyikan' : 'Tampilkan';
+  drawReflection();
+}
+
+// ================================================================
+// REFRACTION CANVAS
+// ================================================================
+const rfrCanvas = document.getElementById('refractionCanvas');
+const rfrCtx = rfrCanvas.getContext('2d');
+let rfrW, rfrH;
+let rfrRayEndX, rfrRayEndY;
+let isDraggingRfr = false;
+let selectedMediumCard = null;
+
+function initRefraction() {
+  rfrW = rfrCanvas.offsetWidth;
+  rfrH = 380;
+  rfrCanvas.width = rfrW;
+  rfrCanvas.height = rfrH;
+  rfrRayEndX = rfrW * 0.3;
+  rfrRayEndY = rfrH * 0.12;
+  drawRefraction();
+}
+
+function drawRefraction() {
+  rfrCtx.clearRect(0, 0, rfrW, rfrH);
+  const interfaceY = rfrH * 0.5;
+  const hitX = rfrW * 0.5;
+
+  // Medium 1 background (top)
+  const bg1 = rfrCtx.createLinearGradient(0, 0, 0, interfaceY);
+  bg1.addColorStop(0, '#0d1b2a');
+  bg1.addColorStop(1, '#1a2d40');
+  rfrCtx.fillStyle = bg1;
+  rfrCtx.fillRect(0, 0, rfrW, interfaceY);
+
+  // Medium 2 background (bottom) - changes with n2
+  const opacity = Math.min(0.95, n2 * 0.3);
+  const bg2 = rfrCtx.createLinearGradient(0, interfaceY, 0, rfrH);
+  bg2.addColorStop(0, `rgba(26,60,100,${opacity})`);
+  bg2.addColorStop(1, `rgba(5,20,60,${opacity + 0.2})`);
+  rfrCtx.fillStyle = bg2;
+  rfrCtx.fillRect(0, interfaceY, rfrW, rfrH - interfaceY);
+
+  // Interface line
+  const ifGrad = rfrCtx.createLinearGradient(0, interfaceY - 2, 0, interfaceY + 2);
+  ifGrad.addColorStop(0, 'rgba(144,202,249,0.8)');
+  ifGrad.addColorStop(1, 'rgba(144,202,249,0.2)');
+  rfrCtx.fillStyle = ifGrad;
+  rfrCtx.fillRect(0, interfaceY - 2, rfrW, 4);
+
+  // Medium labels
+  rfrCtx.font = '12px DM Mono, monospace';
+  rfrCtx.fillStyle = 'rgba(255,255,255,0.4)';
+  rfrCtx.fillText(`n₁ = ${n1.toFixed(2)}  (${medLabel1.split('(')[0].trim()})`, 14, 28);
+  rfrCtx.fillText(`n₂ = ${n2.toFixed(2)}  (${medLabel2.split('(')[0].trim()})`, 14, interfaceY + 24);
+
+  // Normal line
+  rfrCtx.setLineDash([6, 6]);
+  rfrCtx.strokeStyle = 'rgba(255,255,255,0.25)';
+  rfrCtx.lineWidth = 1.5;
+  rfrCtx.beginPath();
+  rfrCtx.moveTo(hitX, interfaceY - rfrH * 0.42);
+  rfrCtx.lineTo(hitX, interfaceY + rfrH * 0.42);
+  rfrCtx.stroke();
+  rfrCtx.setLineDash([]);
+
+  // Calculate angles
+  const dx = hitX - rfrRayEndX;
+  const dy = interfaceY - rfrRayEndY;
+  const theta1 = Math.atan2(Math.abs(dx), Math.abs(dy));
+  const sinT2 = (n1 / n2) * Math.sin(theta1);
+  const theta1Deg = Math.round(theta1 * 180 / Math.PI);
+
+  // Critical angle
+  const critAngle = n2 < n1 ? Math.asin(n2 / n1) : null;
+
+  const isTIR = n1 > n2 && Math.sin(theta1) >= n2 / n1;
+
+  // Incident ray
+  rfrCtx.shadowColor = '#f9a825';
+  rfrCtx.shadowBlur = 14;
+  drawArrowLine(rfrCtx, rfrRayEndX, rfrRayEndY, hitX, interfaceY, '#f9a825', 2.5, true);
+  rfrCtx.shadowBlur = 0;
+
+  if (isTIR) {
+    // Total Internal Reflection
+    const reflDX = -dx;
+    rfrCtx.shadowColor = '#ef5350';
+    rfrCtx.shadowBlur = 14;
+    drawArrowLine(rfrCtx, hitX, interfaceY, hitX + reflDX, rfrRayEndY, '#ef5350', 2.5, true);
+    rfrCtx.shadowBlur = 0;
+
+    // TIR label
+    rfrCtx.fillStyle = '#ef5350';
+    rfrCtx.font = 'bold 12px Lato';
+    rfrCtx.textAlign = 'center';
+    rfrCtx.fillText('⚡ REFLEKSI INTERNAL TOTAL (TIR)', hitX, interfaceY - 30);
+
+    document.getElementById('snellT2').textContent = 'TIR';
+    document.getElementById('snellStatus').textContent = '⚡ TIR!';
+    document.getElementById('snellStatus').style.color = '#ef5350';
+  } else {
+    const theta2 = Math.asin(Math.min(1, sinT2));
+    const theta2Deg = Math.round(theta2 * 180 / Math.PI);
+
+    // Refracted ray direction
+    const dir = dx >= 0 ? 1 : -1;
+    const rfrLen = rfrH * 0.38;
+    const rfrX2 = hitX + dir * Math.sin(theta2) * rfrLen;
+    const rfrY2 = interfaceY + Math.cos(theta2) * rfrLen;
+
+    rfrCtx.shadowColor = '#42a5f5';
+    rfrCtx.shadowBlur = 14;
+    drawArrowLine(rfrCtx, hitX, interfaceY, rfrX2, rfrY2, '#42a5f5', 2.5, true);
+    rfrCtx.shadowBlur = 0;
+
+    document.getElementById('snellT2').textContent = theta2Deg + '°';
+    document.getElementById('snellStatus').textContent = n1 < n2 ? '↘ Mendekati Normal' : '↗ Menjauhi Normal';
+    document.getElementById('snellStatus').style.color = '#42a5f5';
+  }
+
+  // Critical angle line
+  if (critAngle && n1 > n2) {
+    const critDeg = Math.round(critAngle * 180 / Math.PI);
+    const cx = hitX - Math.sin(critAngle) * rfrH * 0.35;
+    rfrCtx.setLineDash([4, 6]);
+    rfrCtx.strokeStyle = 'rgba(255,200,0,0.4)';
+    rfrCtx.lineWidth = 1;
+    rfrCtx.beginPath();
+    rfrCtx.moveTo(cx, rfrRayEndY);
+    rfrCtx.lineTo(hitX, interfaceY);
+    rfrCtx.stroke();
+    rfrCtx.setLineDash([]);
+    rfrCtx.fillStyle = 'rgba(255,200,0,0.6)';
+    rfrCtx.font = '10px DM Mono';
+    rfrCtx.textAlign = 'left';
+    rfrCtx.fillText(`θc = ${critDeg}°`, cx - 30, rfrRayEndY - 8);
+  }
+
+  document.getElementById('snellT1').textContent = theta1Deg + '°';
+  document.getElementById('snellN1').textContent = n1.toFixed(2);
+  document.getElementById('snellN2').textContent = n2.toFixed(2);
+
+  // Drag handle
+  rfrCtx.beginPath();
+  rfrCtx.arc(rfrRayEndX, rfrRayEndY, 10, 0, Math.PI * 2);
+  rfrCtx.fillStyle = 'rgba(249,168,37,0.3)';
+  rfrCtx.fill();
+  rfrCtx.strokeStyle = '#f9a825';
+  rfrCtx.lineWidth = 2;
+  rfrCtx.stroke();
+  rfrCtx.fillStyle = '#f9a825';
+  rfrCtx.font = 'bold 10px Lato';
+  rfrCtx.textAlign = 'center';
+  rfrCtx.fillText('☞', rfrRayEndX, rfrRayEndY + 4);
+}
+
+rfrCanvas.addEventListener('mousedown', e => {
+  const r = rfrCanvas.getBoundingClientRect();
+  const mx = (e.clientX - r.left) * (rfrW / r.width);
+  const my = (e.clientY - r.top) * (rfrH / r.height);
+  if (Math.hypot(mx - rfrRayEndX, my - rfrRayEndY) < 20) isDraggingRfr = true;
+});
+rfrCanvas.addEventListener('mousemove', e => {
+  if (!isDraggingRfr) return;
+  const r = rfrCanvas.getBoundingClientRect();
+  rfrRayEndX = Math.max(10, Math.min(rfrW - 10, (e.clientX - r.left) * (rfrW / r.width)));
+  rfrRayEndY = Math.max(10, Math.min(rfrH * 0.45, (e.clientY - r.top) * (rfrH / r.height)));
+  drawRefraction();
+});
+rfrCanvas.addEventListener('mouseup', () => { isDraggingRfr = false; });
+rfrCanvas.addEventListener('touchstart', e => {
+  const r = rfrCanvas.getBoundingClientRect();
+  const mx = (e.touches[0].clientX - r.left) * (rfrW / r.width);
+  const my = (e.touches[0].clientY - r.top) * (rfrH / r.height);
+  if (Math.hypot(mx - rfrRayEndX, my - rfrRayEndY) < 28) isDraggingRfr = true;
+  e.preventDefault();
+}, {passive:false});
+rfrCanvas.addEventListener('touchmove', e => {
+  if (!isDraggingRfr) return;
+  const r = rfrCanvas.getBoundingClientRect();
+  rfrRayEndX = Math.max(10, Math.min(rfrW - 10, (e.touches[0].clientX - r.left) * (rfrW / r.width)));
+  rfrRayEndY = Math.max(10, Math.min(rfrH * 0.45, (e.touches[0].clientY - r.top) * (rfrH / r.height)));
+  drawRefraction();
+  e.preventDefault();
+}, {passive:false});
+rfrCanvas.addEventListener('touchend', () => { isDraggingRfr = false; });
+
+function selectMedium(el, name, n) {
+  document.querySelectorAll('.medium-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  n2 = n;
+  medLabel2 = el.querySelector('.mc-name').textContent + ` (n=${n.toFixed(2)})`;
+  document.getElementById('med2Label').textContent = medLabel2;
+  document.getElementById('snellN2').textContent = n.toFixed(2);
+  drawRefraction();
+}
+function swapMedia() {
+  [n1, n2] = [n2, n1];
+  [medLabel1, medLabel2] = [medLabel2, medLabel1];
+  document.getElementById('med1Label').textContent = medLabel1;
+  document.getElementById('med2Label').textContent = medLabel2;
+  drawRefraction();
+}
+function toggleTIR() {
+  // Set conditions for TIR demonstration
+  n1 = 1.5; n2 = 1.0;
+  medLabel1 = 'Kaca (n=1.50)';
+  medLabel2 = 'Udara (n=1.00)';
+  document.getElementById('med1Label').textContent = medLabel1;
+  document.getElementById('med2Label').textContent = medLabel2;
+  rfrRayEndX = rfrW * 0.2;
+  rfrRayEndY = rfrH * 0.12;
+  document.querySelectorAll('.medium-card').forEach(c => c.classList.remove('active'));
+  drawRefraction();
+}
+
+// ================================================================
+// MIRROR CANVAS
+// ================================================================
+const mirrorCanvas = document.getElementById('mirrorCanvas');
+const mirrorCtx = mirrorCanvas.getContext('2d');
+let mirW, mirH;
+let objX; // object position x
+let isDraggingObj = false;
+let sinars = [true, true, true];
+
+function initMirror() {
+  mirW = mirrorCanvas.offsetWidth;
+  mirH = 420;
+  mirrorCanvas.width = mirW;
+  mirrorCanvas.height = mirH;
+  objX = mirW * 0.25;
+  drawMirror();
+}
+
+function drawMirror() {
+  mirrorCtx.clearRect(0, 0, mirW, mirH);
+
+  // Soft light background
+  const bg = mirrorCtx.createLinearGradient(0, 0, 0, mirH);
+  bg.addColorStop(0, '#fafafa');
+  bg.addColorStop(1, '#f0ede8');
+  mirrorCtx.fillStyle = bg;
+  mirrorCtx.fillRect(0, 0, mirW, mirH);
+
+  const cx = mirW * 0.72; // mirror center x
+  const cy = mirH * 0.5;  // optical axis y
+  const f = focalLen;     // focal length
+  const R = f * 2;        // radius of curvature
+
+  // ---- Optical Axis ----
+  mirrorCtx.strokeStyle = 'rgba(0,0,0,0.12)';
+  mirrorCtx.lineWidth = 1.5;
+  mirrorCtx.setLineDash([8, 6]);
+  mirrorCtx.beginPath();
+  mirrorCtx.moveTo(0, cy);
+  mirrorCtx.lineTo(mirW, cy);
+  mirrorCtx.stroke();
+  mirrorCtx.setLineDash([]);
+
+  // ---- Draw Mirror ----
+  if (mirrorType === 'cekung') {
+    drawConcaveMirror(mirrorCtx, cx, cy, R);
+  } else if (mirrorType === 'cembung') {
+    drawConvexMirror(mirrorCtx, cx, cy, R);
+  } else {
+    drawFlatMirror(mirrorCtx, cx, cy);
+  }
+
+  // ---- Labels: F, M, C ----
+  const fX = mirrorType === 'cekung' ? cx - f : cx + f;
+  const RX = mirrorType === 'cekung' ? cx - R : cx + R;
+
+  // Focus point
+  mirrorCtx.beginPath();
+  mirrorCtx.arc(fX, cy, 5, 0, Math.PI * 2);
+  mirrorCtx.fillStyle = '#e67e22';
+  mirrorCtx.fill();
+  mirrorCtx.fillStyle = '#e67e22';
+  mirrorCtx.font = 'bold 13px DM Mono, monospace';
+  mirrorCtx.textAlign = 'center';
+  mirrorCtx.fillText('F', fX, cy + 18);
+
+  if (mirrorType !== 'datar') {
+    // Center of curvature
+    mirrorCtx.beginPath();
+    mirrorCtx.arc(RX, cy, 5, 0, Math.PI * 2);
+    mirrorCtx.fillStyle = '#8e24aa';
+    mirrorCtx.fill();
+    mirrorCtx.fillStyle = '#8e24aa';
+    mirrorCtx.fillText('M', RX, cy + 18);
+  }
+
+  // Vertex
+  mirrorCtx.beginPath();
+  mirrorCtx.arc(cx, cy, 4, 0, Math.PI * 2);
+  mirrorCtx.fillStyle = '#1565c0';
+  mirrorCtx.fill();
+  mirrorCtx.fillStyle = '#1565c0';
+  mirrorCtx.fillText('O', cx + 12, cy + 18);
+
+  // ---- Object (arrow) ----
+  const objH = 80;
+  const objBaseY = cy;
+  const objTopY = cy - objH;
+  const actualObjX = Math.max(20, Math.min(cx - 5, objX));
+
+  // Object arrow
+  mirrorCtx.strokeStyle = '#c62828';
+  mirrorCtx.lineWidth = 3;
+  mirrorCtx.beginPath();
+  mirrorCtx.moveTo(actualObjX, objBaseY);
+  mirrorCtx.lineTo(actualObjX, objTopY);
+  mirrorCtx.stroke();
+  // Arrowhead
+  mirrorCtx.beginPath();
+  mirrorCtx.moveTo(actualObjX, objTopY);
+  mirrorCtx.lineTo(actualObjX - 7, objTopY + 14);
+  mirrorCtx.lineTo(actualObjX + 7, objTopY + 14);
+  mirrorCtx.closePath();
+  mirrorCtx.fillStyle = '#c62828';
+  mirrorCtx.fill();
+  // Object label
+  mirrorCtx.fillStyle = '#c62828';
+  mirrorCtx.font = 'bold 12px Lato';
+  mirrorCtx.textAlign = 'center';
+  mirrorCtx.fillText('BENDA', actualObjX, cy + 18);
+
+  // ---- Drag handle (top of object) ----
+  mirrorCtx.beginPath();
+  mirrorCtx.arc(actualObjX, objTopY, 9, 0, Math.PI * 2);
+  mirrorCtx.fillStyle = 'rgba(198,40,40,0.2)';
+  mirrorCtx.fill();
+  mirrorCtx.strokeStyle = '#c62828';
+  mirrorCtx.lineWidth = 2;
+  mirrorCtx.stroke();
+
+  // ---- Calculate image and draw rays ----
+  const s = cx - actualObjX; // object distance from mirror
+  let sPrime; // image distance
+
+  if (mirrorType === 'datar') {
+    sPrime = -s; // virtual image behind mirror
+  } else if (mirrorType === 'cekung') {
+    sPrime = f !== s ? (f * s) / (s - f) : Infinity;
+  } else { // cembung — virtual focus
+    const fVirtual = -f;
+    sPrime = fVirtual !== s ? (fVirtual * s) / (s - fVirtual) : Infinity;
+  }
+
+  const mag = sPrime !== Infinity ? -sPrime / s : 0;
+  const imgX = cx - sPrime;
+  const imgTopY = cy - objH * mag;
+
+  // Draw rays
+  drawMirrorRays(mirrorCtx, actualObjX, objTopY, cx, cy, f, fX, RX, sPrime, imgX, imgTopY, s, mirrorType);
+
+  // ---- Draw image (if calculable) ----
+  if (isFinite(sPrime) && isFinite(imgTopY)) {
+    const isVirtual = sPrime < 0;
+    const imgColor = isVirtual ? '#1565c0' : '#2e7d32';
+
+    mirrorCtx.strokeStyle = imgColor;
+    mirrorCtx.lineWidth = 2.5;
+    mirrorCtx.setLineDash(isVirtual ? [6, 4] : []);
+    mirrorCtx.beginPath();
+    mirrorCtx.moveTo(imgX, cy);
+    mirrorCtx.lineTo(imgX, imgTopY);
+    mirrorCtx.stroke();
+    mirrorCtx.setLineDash([]);
+
+    if (!isVirtual) {
+      mirrorCtx.beginPath();
+      mirrorCtx.moveTo(imgX, imgTopY);
+      mirrorCtx.lineTo(imgX - 7, imgTopY + 14 * Math.sign(mag) * -1);
+      mirrorCtx.lineTo(imgX + 7, imgTopY + 14 * Math.sign(mag) * -1);
+      mirrorCtx.closePath();
+      mirrorCtx.fillStyle = imgColor;
+      mirrorCtx.fill();
+    } else {
+      mirrorCtx.beginPath();
+      mirrorCtx.arc(imgX, imgTopY, 5, 0, Math.PI * 2);
+      mirrorCtx.fillStyle = imgColor;
+      mirrorCtx.fill();
+    }
+
+    mirrorCtx.fillStyle = imgColor;
+    mirrorCtx.font = 'bold 11px Lato';
+    mirrorCtx.textAlign = 'center';
+    mirrorCtx.fillText(isVirtual ? 'MAYA' : 'NYATA', imgX, cy + 18);
+
+    // Info panel
+    const sFixed = s.toFixed(0);
+    const spFixed = Math.abs(sPrime).toFixed(0);
+    const magFixed = Math.abs(mag).toFixed(2);
+    document.getElementById('mObjDist').textContent = `${sFixed} px`;
+    document.getElementById('mImgDist').textContent = `${spFixed} px`;
+    document.getElementById('mMag').textContent = `${magFixed}×`;
+
+    const natures = [];
+    if (isVirtual) natures.push('Maya'); else natures.push('Nyata');
+    if (mag > 0) natures.push('Tegak'); else natures.push('Terbalik');
+    if (Math.abs(mag) > 1) natures.push('Diperbesar'); else if (Math.abs(mag) < 1) natures.push('Diperkecil'); else natures.push('Sama Besar');
+    document.getElementById('mNature').textContent = natures.join(' · ');
+  } else {
+    document.getElementById('mObjDist').textContent = `${s.toFixed(0)} px`;
+    document.getElementById('mImgDist').textContent = '∞';
+    document.getElementById('mMag').textContent = '—';
+    document.getElementById('mNature').textContent = 'Sinar Sejajar';
+  }
+}
+
+function drawMirrorRays(ctx, ox, oy, cx, cy, f, fX, RX, sPrime, imgX, imgTopY, s, mType) {
+  const colors = ['#f9a825', '#42a5f5', '#66bb6a'];
+  const isConvex = mType === 'cembung';
+  const isFlat = mType === 'datar';
+
+  // RAY 1: Parallel to axis → reflects through F
+  if (sinars[0]) {
+    ctx.shadowColor = colors[0];
+    ctx.shadowBlur = 8;
+    ctx.strokeStyle = colors[0];
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(ox, oy);
+    ctx.lineTo(cx, oy);
+    ctx.stroke();
+
+    if (isFlat) {
+      // Flat mirror: perpendicular reflection
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(cx, oy);
+      ctx.lineTo(cx + s, oy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    } else {
+      // After reflection: goes through or away from F
+      const targetY = isConvex ? cy + (oy - cy) : cy;
+      ctx.beginPath();
+      ctx.moveTo(cx, oy);
+      if (isConvex) {
+        // Diverges as if from virtual F
+        const ext = (cx + f * 3);
+        const slope = (oy - cy) / (cx - fX);
+        const extY = oy + slope * f * 3;
+        ctx.lineTo(ext, extY);
+        ctx.stroke();
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(cx, oy);
+        ctx.lineTo(fX, cy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else {
+        ctx.lineTo(fX, cy);
+        ctx.stroke();
+        // Continue beyond F
+        if (sPrime > 0 && isFinite(imgTopY)) {
+          ctx.beginPath();
+          ctx.moveTo(fX, cy);
+          ctx.lineTo(imgX, imgTopY);
+          ctx.stroke();
+        } else if (sPrime < 0) {
+          const slope = (cy - oy) / (fX - cx);
+          ctx.setLineDash([5, 5]);
+          ctx.beginPath();
+          ctx.moveTo(cx, oy);
+          ctx.lineTo(cx + f * 2, oy + slope * f * 2 * (-1));
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+    }
+    ctx.shadowBlur = 0;
+  }
+
+  // RAY 2: Through F → reflects parallel to axis
+  if (sinars[1] && !isFlat) {
+    ctx.shadowColor = colors[1];
+    ctx.shadowBlur = 8;
+    ctx.strokeStyle = colors[1];
+    ctx.lineWidth = 2;
+    if (!isConvex) {
+      // Hits mirror after passing through F
+      const slope2 = (oy - cy) / (ox - fX);
+      ctx.beginPath();
+      ctx.moveTo(ox, oy);
+      ctx.lineTo(cx, cy + slope2 * (cx - fX));
+      ctx.stroke();
+      const hitY2 = cy + slope2 * (cx - fX);
+      ctx.beginPath();
+      ctx.moveTo(cx, hitY2);
+      ctx.lineTo(0, hitY2);
+      ctx.stroke();
+    } else {
+      // For convex: ray aimed at virtual F diverges parallel
+      ctx.beginPath();
+      ctx.moveTo(ox, oy);
+      ctx.lineTo(cx, oy);
+      ctx.stroke();
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(cx, oy);
+      ctx.lineTo(fX, cy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(cx, oy);
+      ctx.lineTo(0, oy);
+      ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
+  }
+
+  // RAY 3: Through center (M) → reflects back on itself
+  if (sinars[2] && !isFlat) {
+    ctx.shadowColor = colors[2];
+    ctx.shadowBlur = 8;
+    ctx.strokeStyle = colors[2];
+    ctx.lineWidth = 2;
+    if (!isConvex) {
+      ctx.beginPath();
+      ctx.moveTo(ox, oy);
+      ctx.lineTo(cx, cy);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(ox - (cx - ox) * 1.5, oy + (cy - oy) * 1.5);
+      ctx.stroke();
+    } else {
+      // For convex: aimed at virtual center, diverges
+      ctx.beginPath();
+      ctx.moveTo(ox, oy);
+      ctx.lineTo(cx, cy);
+      ctx.stroke();
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(RX, cy - (oy - cy));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      const slopeBack = (cy - oy) / (cx - ox);
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(0, cy - slopeBack * cx);
+      ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
+  }
+}
+
+function drawConcaveMirror(ctx, cx, cy, R) {
+  // Draw arc for concave mirror (curves inward from right)
+  const aperture = Math.min(mirH * 0.38, R * 0.85);
+  const startAngle = Math.PI * 0.5 - 0.6;
+  const endAngle = Math.PI * 1.5 + 0.6;
+
+  ctx.save();
+  // Mirror glass
+  ctx.beginPath();
+  ctx.arc(cx + R, cy, R, Math.PI - 0.6, Math.PI + 0.6);
+  ctx.strokeStyle = '#1565c0';
+  ctx.lineWidth = 5;
+  ctx.stroke();
+  // Hatch back
+  ctx.strokeStyle = 'rgba(21,101,192,0.2)';
+  ctx.lineWidth = 12;
+  ctx.stroke();
+
+  // Reflective surface highlight
+  ctx.beginPath();
+  ctx.arc(cx + R, cy, R, Math.PI - 0.5, Math.PI + 0.5);
+  ctx.strokeStyle = 'rgba(144,202,249,0.8)';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawConvexMirror(ctx, cx, cy, R) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx - R, cy, R, -0.6, 0.6);
+  ctx.strokeStyle = '#e65100';
+  ctx.lineWidth = 5;
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(230,81,0,0.2)';
+  ctx.lineWidth = 12;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(cx - R, cy, R, -0.5, 0.5);
+  ctx.strokeStyle = 'rgba(255,183,77,0.8)';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawFlatMirror(ctx, cx, cy) {
+  const h = mirH * 0.7;
+  ctx.save();
+  const g = ctx.createLinearGradient(cx - 6, 0, cx + 6, 0);
+  g.addColorStop(0, '#90caf9');
+  g.addColorStop(0.4, '#e3f2fd');
+  g.addColorStop(0.6, '#bbdefb');
+  g.addColorStop(1, '#1565c0');
+  ctx.fillStyle = g;
+  ctx.fillRect(cx - 6, cy - h / 2, 12, h);
+  // Hatch
+  ctx.strokeStyle = 'rgba(21,101,192,0.15)';
+  ctx.lineWidth = 1;
+  for (let y = cy - h / 2; y < cy + h / 2; y += 12) {
+    ctx.beginPath();
+    ctx.moveTo(cx + 6, y);
+    ctx.lineTo(cx + 16, y + 10);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// Mirror drag
+mirrorCanvas.addEventListener('mousedown', e => {
+  const r = mirrorCanvas.getBoundingClientRect();
+  const mx = (e.clientX - r.left) * (mirW / r.width);
+  const my = (e.clientY - r.top) * (mirH / r.height);
+  const objTopY = mirH * 0.5 - 80;
+  if (Math.hypot(mx - objX, my - objTopY) < 22) isDraggingObj = true;
+});
+mirrorCanvas.addEventListener('mousemove', e => {
+  if (!isDraggingObj) return;
+  const r = mirrorCanvas.getBoundingClientRect();
+  objX = Math.max(30, Math.min(mirW * 0.68, (e.clientX - r.left) * (mirW / r.width)));
+  drawMirror();
+});
+mirrorCanvas.addEventListener('mouseup', () => { isDraggingObj = false; });
+mirrorCanvas.addEventListener('touchstart', e => {
+  const r = mirrorCanvas.getBoundingClientRect();
+  const mx = (e.touches[0].clientX - r.left) * (mirW / r.width);
+  const my = (e.touches[0].clientY - r.top) * (mirH / r.height);
+  const objTopY = mirH * 0.5 - 80;
+  if (Math.hypot(mx - objX, my - objTopY) < 28) isDraggingObj = true;
+  e.preventDefault();
+}, {passive:false});
+mirrorCanvas.addEventListener('touchmove', e => {
+  if (!isDraggingObj) return;
+  const r = mirrorCanvas.getBoundingClientRect();
+  objX = Math.max(30, Math.min(mirW * 0.68, (e.touches[0].clientX - r.left) * (mirW / r.width)));
+  drawMirror();
+  e.preventDefault();
+}, {passive:false});
+mirrorCanvas.addEventListener('touchend', () => { isDraggingObj = false; });
+
+function setMirror(type) {
+  mirrorType = type;
+  document.getElementById('mbCekung').classList.toggle('active', type === 'cekung');
+  document.getElementById('mbCembung').classList.toggle('active', type === 'cembung');
+  document.getElementById('mbDatar').classList.toggle('active', type === 'datar');
+  // Adjust focal for flat
+  if (type === 'datar') focalLen = 999;
+  else if (type === 'cekung') focalLen = 120;
+  else focalLen = 100;
+  document.getElementById('focalSlider').value = Math.min(220, focalLen);
+  document.getElementById('focalLabel').textContent = focalLen < 300 ? focalLen : '∞';
+  drawMirror();
+}
+function toggleSinar(n) {
+  sinars[n - 1] = !sinars[n - 1];
+  document.getElementById(`btnS${n}`).classList.toggle('active', sinars[n - 1]);
+  drawMirror();
+}
+function setFocal(v) {
+  focalLen = parseInt(v);
+  document.getElementById('focalLabel').textContent = v;
+  drawMirror();
+}
+
+// ================================================================
+// RESIZE & INIT
+// ================================================================
+function onResize() {
+  initReflection();
+  initRefraction();
+  initMirror();
+}
+
+window.addEventListener('load', () => {
+  onResize();
+  // Set initial medium label
+  document.getElementById('med2Label').textContent = 'Air (n=1.33)';
+});
+window.addEventListener('resize', () => {
+  clearTimeout(window._resizeTimer);
+  window._resizeTimer = setTimeout(onResize, 150);
+});
+</script>
+</body>
+</html>
