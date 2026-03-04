@@ -595,9 +595,45 @@
     border-top: 1px solid var(--border);
     margin-top: 20px;
   }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex;
+    background: rgba(6,10,20,0.95);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    overflow-x: auto;
+    backdrop-filter: blur(12px);
+  }
+  .nav-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .nav-tab:hover { color: var(--accent); background: rgba(0,212,255,0.04); }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); text-shadow: 0 0 10px rgba(0,212,255,0.5); }
 </style>
 </head>
 <body>
+
+<nav class="nav-tabs">
+  <a href="index.html" class="nav-tab active">⚛ TABEL PERIODIK</a>
+  <a href="cahaya.html" class="nav-tab">☀ CAHAYA</a>
+</nav>
 
 <header>
   <div class="title">⚛ Tabel Periodik Unsur Interaktif</div>
